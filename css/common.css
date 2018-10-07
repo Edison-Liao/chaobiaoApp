@@ -1,0 +1,402 @@
+/************************公共部分********************/
+
+
+/*标题栏*/
+
+.header-title {
+	background-color: #007BE6;
+}
+
+.header-title>h1 {
+	color: #ffffff;
+	font-size: 16px;
+}
+
+.header-title>a {
+	color: #ffffff;
+}
+
+
+/*页面主体部分*/
+
+#content {
+	margin-bottom: 20%;
+}
+
+
+/*页脚部分*/
+
+.footer-nav {
+	padding-right: 20px;
+	padding-left: 20px;
+}
+
+.go-home,
+.go-out {
+	margin-top: 8px;
+	font-size: 22px;
+}
+
+
+/*  */
+
+.mui-input-group:after,
+.mui-input-group:before {
+	height: 0;
+}
+
+.mui-table-view:after,
+.mui-table-view:before {
+	height: 0;
+}
+
+.mui-input-group>.mui-input-row:after {
+	height: 0;
+}
+
+.mui-table-view>.mui-table-view-cell:after {
+	height: 0;
+}
+
+
+/************************首页部分********************/
+
+
+/*轮播图*/
+
+.slider {
+	height: 230px;
+}
+
+
+/*九宫格导航*/
+
+.file-inquiries {
+	width: 42px;
+	height: 40px;
+	display: inline-block;
+	background-image: url("../images/search.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.meter-reading {
+	width: 42px;
+	height: 40px;
+	display: inline-block;
+	background-image: url("../images/state.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.charge {
+	width: 42px;
+	height: 40px;
+	display: inline-block;
+	background-image: url("../images/cost.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.charge-daily {
+	width: 42px;
+	height: 40px;
+	display: inline-block;
+	background-image: url("../images/daily.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.my-files {
+	width: 42px;
+	height: 40px;
+	display: inline-block;
+	background-image: url("../images/user.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+
+/*版本号显示*/
+
+.version-number {
+	position: fixed;
+	left: calc(100% - 130px);
+	top: calc(100% - 75px);
+	text-align: right;
+	color: #cacaca;
+}
+
+
+/************************登录部分********************/
+
+
+/*logo*/
+
+.login-logo {
+	width: 157px;
+	height: 45px;
+	margin: 83px 108px 21px 110px;
+	background-image: url("../images/logo.png");
+	background-size: cover;
+}
+
+
+/*登录标题栏*/
+
+.login-title {
+	font-size: 24px;
+	text-align: center;
+	margin-bottom: 50px;
+	color: #000000;
+}
+
+
+/*登录内容部分*/
+
+.login {
+	margin: 0 23px 70px;
+}
+
+.login-form {
+	padding: 38px 22px 59px 35px;
+}
+
+.login-form>.mui-input-row:first-child {
+	margin-bottom: 41px;
+}
+
+.login-form>.mui-input-row>label,
+.login-form>.mui-input-row>input {
+	padding: 0;
+	vertical-align: middle;
+	font-size: 14px;
+}
+
+.login-form>.mui-input-row>label {
+	padding-top: 14px;
+	width: 25%;
+}
+
+.login-form>.mui-input-row>label>i {
+	margin-right: 5px;
+}
+
+.login-form>.mui-input-row>input {
+	border-bottom: 1px solid #dadada;
+	padding: 0 0 0 9px;
+	width: 75%;
+}
+
+.login-btn {
+	height: 40px;
+	text-align: center;
+	margin-top: 59px;
+	margin-bottom: 0;
+	font-size: 16px;
+	padding: 0;
+}
+
+
+/*底部图片*/
+
+.footer-logo {
+	height: 95px;
+	background-image: url("../images/city.png");
+	background-size: cover;
+}
+
+
+/************************查询条件部分********************/
+
+.condition-list {
+	margin-top: 3%;
+	padding: 21px 71px 25px 32px;
+}
+
+.condition-list>.selection-conditions {
+	margin-bottom: 20px;
+}
+
+.condition-list>.selection-conditions:last-child {
+	margin-bottom: 0;
+}
+
+.condition-list>.selection-conditions>label,
+.condition-list>.selection-conditions>input {
+	font-size: 14px;
+	padding: 0;
+}
+
+.condition-list>.selection-conditions>label {
+	padding-top: 3%;
+	width: 33%;
+}
+
+.condition-list>.selection-conditions>input {
+	width: 67%;
+	height: 31px;
+	border: 1px solid #B3B2B2;
+	border-radius: 5px;
+	padding-left: 2%;
+}
+
+.search-btn {
+	width: 80%;
+	height: 41px;
+	margin-top: 20px;
+	margin-left: 10%;
+	text-align: center;
+	padding: 0;
+	font-size: 16px;
+	border-radius: 5px;
+}
+
+
+/************************查询列表部分********************/
+
+.users-list,
+.cost-list,
+.costing-list {
+	background-color: #efeff4;
+}
+
+.users-list>.mui-table-view-cell,
+.cost-list>.mui-table-view-cell,
+.costing-list>.mui-table-view-cell {
+	background-color: #ffffff;
+	padding: 11px 23px;
+	margin-top: 10px;
+	height: 81px;
+}
+
+.users-list>.mui-table-view-cell:first,
+.cost-list>.mui-table-view-cell:first,
+.costing-list>.mui-table-view-cell:first {
+	margin-top: 0;
+}
+
+.mui-table-view-cell>p {
+	display: inline-block;
+	width: 85%;
+}
+
+.mui-table-view-cell>.name-table-number {
+	font-size: 16px;
+	color: #000000;
+}
+
+.mui-table-view-cell>.money-table-number {
+	font-size: 14px;
+	color: #000000;
+}
+
+.mui-table-view-cell>.users-address {
+	margin-top: 14px;
+	font-size: 12px;
+}
+
+.mui-table-view-cell .users-number {
+	margin-left: 8%;
+}
+
+.mui-table-view-cell .is-read {
+	margin-left: 4%;
+	font-size: 12px;
+	padding: 1px 5px 1px;
+	border-radius: 3px;
+}
+
+.mui-table-view-cell .is-read-true {
+	background-color: #99CAF5;
+}
+
+.mui-table-view-cell .is-read-false {
+	background-color: #F7C3B3;
+}
+
+.mui-table-view-cell>.list-right {
+	font-size: 30px;
+	margin-top: 0 !important;
+	color: #007BE6 !important;
+}
+
+
+/************************详情列表部分********************/
+
+.mui-content>.mui-table-view {
+	margin-top: 15px;
+}
+
+.user-info {
+	padding: 16px 18px 0 32px;
+	font-size: 14px;
+}
+
+.user-info>li {
+	padding: 0 0 15px 0;
+	height: 35px;
+}
+
+.user-info>li:last-child {
+	padding: 0;
+}
+
+.first-btn {
+	position: absolute;
+	top: 5%;
+	right: 5%;
+}
+
+.last-btn {
+	position: absolute;
+	bottom: 10%;
+	right: 5%;
+}
+
+.reading-input {
+	width: 60% !important;
+	height: 30px !important;
+	font-size: 14px !important;
+	vertical-align: middle;
+}
+
+.reading-lable {
+	vertical-align: middle;
+	margin-top: 5px;
+
+}
+
+.cost-info {
+	padding: 16px 60px 0 32px;
+}
+
+.cost-input {
+	width: 70% !important;
+	height: 30px !important;
+	font-size: 14px !important;
+	vertical-align: middle;
+}
+
+.confirm-btn {
+	width: 80%;
+	height: 41px;
+	margin-top: 20px;
+	margin-left: 10%;
+	text-align: center;
+	padding: 0;
+	font-size: 16px;
+	border-radius: 5px;
+}
+
+/* 费用详情 */
+.mui-table-view-cell>.cost-record {
+	display: inline-block;
+	width: 35%;
+}
+.mui-table-view-cell>.cost-record>span:first-child{
+	color: #000000;
+}
+.cost-record span {
+	display: block;
+}

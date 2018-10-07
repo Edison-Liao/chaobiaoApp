@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>费用记录</title>
+		<link rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="../css/common.css" />
+	</head>
+
+	<body>
+		<!--页面标题-->
+		<header class="mui-bar mui-bar-nav header-title ">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">费用记录</h1>
+		</header>
+		<!--页面主体-->
+		<div class="mui-content" id="content">
+			<ul class="mui-table-view costing-list">
+				<!-- <li class="mui-table-view-cell" caobiaoid="${data[i].caobiaoid}" gouqimxid="${data[i].gouqimxid}">
+					<p class="money-table-number"><span class="mui-pull-left users-name">账期: ${data[i].kjyear}-${data[i].period}</span>状态：<span
+						 class="mui-pull-left is-read-false is-read">未收费</span></p>
+					<a class="fa fa-angle-right mui-pull-right list-right"></a>
+					<p class="users-address"><span class="address">起数：${data[i].Qids}</span><span class="users-number mui-pull-left">气量：</span></p>
+					<p class="users-address"><span class="address">止数：${data[i].Zhids}</span><span class="users-number mui-pull-left">金额：元</span></p>
+				</li> -->
+				<!-- <li class="mui-table-view-cell" caobiaoid="${data[i].caobiaoid}" gouqimxid="${data[i].gouqimxid}">
+					<p class="cost-record mui-pull-left"><span class="cost-record-left">账期:${data[i].kjyear}-${data[i].period}</span><span class="cost-record-left">起数:${data[i].Qids}</span><span class="cost-record-left">止数:${data[i].Zhids}</span></p>
+					<a class="fa fa-angle-right mui-pull-right list-right"></a>
+					<p class="cost-record mui-pull-right"><span class="cost-record-right">状态:${(data[i].sfztcode=="2"?"已收费":"未收费")}</span><span class="cost-record-right">气量：300</span><span class="cost-record-right">金额：300.00</span></p>
+				</li> -->
+			</ul>
+		</div>
+		<!--底部导航-->
+		<footer class="mui-bar mui-bar-footer footer-nav">
+			<a class="mui-pull-left fa fa-home go-home" id="go-home"></a>
+			<a class="mui-pull-right fa fa-sign-out go-out" id="go-out"></a>
+			<h1 class="mui-title" id="admin-name"></h1>
+		</footer>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/users_list.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/cost_list.js" type="text/javascript" charset="utf-8"></script>
+	</body>
+
+</html>
