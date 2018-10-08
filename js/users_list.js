@@ -29,20 +29,26 @@ mui.plusReady(function() {
 					/* 账户余额 */
 					totalje = 0,
 					/* 滞纳金 */
-					lateFee = 0;
+					lateFee = 0,
+					yingshoufeiID = [];
 				/* 欠费气量和金额累加 */
 				for (var i = 0; i < data.yonghuYingShouFei.length; i++) {
+					yingshoufeiID.push(data.yonghuYingShouFei[i].yshoufeiid)
 					bcql += parseFloat(data.yonghuYingShouFei[i].bcql);
-					qctotalje += parseFloat(data.yonghuYingShouFei[i].qctotalje);
-					totalje += parseFloat(data.yonghuYingShouFei[i].totalje);
-					lateFee += parseFloat(data.yonghuYingShouFei[i].lateFee);
+					qctotalje += parseFloat((data.yonghuYingShouFei[i].qctotalje).toFixed(2));
+					totalje += parseFloat((data.yonghuYingShouFei[i].totalje).toFixed(2));
+					lateFee += parseFloat((data.yonghuYingShouFei[i].lateFee).toFixed(2));
+
 				}
+				window.localStorage.setItem("yingshoufeiID", yingshoufeiID)
 				/* 所有详情页显示用户列表 */
 				var infoList =
 					"<ul class=\"mui-table-view user-info\">\n <li class=\"mui-table-view-cell\"><span class=\"\" ztbz=\"" +
-					data.yonghuInfo.ztbz + "\" code=\"" + data.yonghuInfo.yhcode + "\">\u7528\u6237\u7F16\u53F7\uFF1A" + data.yonghuInfo
-					.yhcode + "</span></li>\n <li class=\"mui-table-view-cell\"><span class=\"\" xh=\"" +
-					data.yonghuInfo.xh + "\">\u7528\u6237\u59D3\u540D\uFF1A" + data.yonghuInfo.yhname +
+					data.yonghuInfo.ztbz + "\" code=\"" + data.yonghuInfo.yhcode + "\" ickaBH=\"" +
+					data.yonghuInfo.ickaBH + "\" xh=\"" + data.yonghuInfo.xh + "\">\u7528\u6237\u7F16\u53F7\uFF1A" + data.yonghuInfo
+					.yhcode +
+					"</span></li>\n <li class=\"mui-table-view-cell\"><span class=\"\" >\u7528\u6237\u59D3\u540D\uFF1A" + data.yonghuInfo
+					.yhname +
 					"</span></li>\n <li class=\"mui-table-view-cell\"><span class=\"\">\u8054\u7CFB\u5730\u5740\uFF1A" + data.yonghuInfo
 					.AddressMS +
 					"</span></li>\n <li class=\"mui-table-view-cell\"><span class=\"\">\u8054\u7CFB\u7535\u8BDD\uFF1A" + data.yonghuInfo
@@ -53,70 +59,75 @@ mui.plusReady(function() {
 					data.yonghuInfo.ickaBH +
 					"</span></li>\n <li class=\"mui-table-view-cell\"><span class=\"\">\u4EF7\u683C\u6807\u51C6\uFF1A" + data.yonghuInfo
 					.JGName +
-					"</span></li>\n  <button type=\"button\" class=\"mui-btn-blue first-btn pre-charge-btn\">\u9884\u6536\u8D39\u7528</button>\n <button type=\"button\" class=\"mui-btn-blue last-btn cost-record-btn\">\u8D39\u7528\u8BB0\u5F55</button>\n  </ul>",
-					
+					"</span></li>\n  <button type=\"button\" class=\"mui-btn-blue first-btn pre-charge-btn\">\u9884\u6536\u8D39\u7528</button>\n <button type=\"button\" class=\"mui-btn-blue last-btn cost-record-btn\">\u8D39\u7528\u8BB0\u5F55</button>\n  </ul>";
+				
+				if (data.yonghuChaobiao != null) {
 					/* 档案搜索详情抄表列表 */
-					readlist =
-					"\t<ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u5F53\u524D\u8D26\u671F\uFF1A" +
-					data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
-					"\u6708\u8D26\u671F</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6284\u8868\u72B6\u6001\uFF1A" +
-					(data.yonghuChaobiao.isChaobiao == "true" ? "未抄表" : "已抄表") +
-					"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u4E0A\u6B21\u8BFB\u6570\uFF1A" +
-					data.yonghuChaobiao.Qids +
-					"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u672C\u6B21\u8BFB\u6570\uFF1A" +
-					data.yonghuChaobiao.Zhids +
-					"</span></li>\n            <button type=\"button\" class=\"mui-btn-blue last-btn\">\u7ACB\u5373\u6284\u8868</button>\n        </ul>",
-					
-					/* 抄表搜索详情抄表列表 */
-					readingList =
-					"<ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u5F53\u524D\u8D26\u671F\uFF1A" +
-					data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
-					"\u6708\u8D26\u671F</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6284\u8868\u72B6\u6001\uFF1A" +
-					(data.yonghuChaobiao.isChaobiao == "true" ? "未抄表" : "已抄表") +
-					"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u4E0A\u6B21\u8BFB\u6570\uFF1A" +
-					data.yonghuChaobiao.Qids +
-					"</span></li>\n            <li class=\"mui-table-view-cell\">\n                <label class=\"reading-lable mui-pull-left\">\u672C\u6B21\u8BFB\u6570\uFF1A</label>\n                <input type=\"text\" class=\"mui-input-clear reading-input mui-pull-left\" placeholder=\"\u8BF7\u8F93\u5165\">\n            </li>\n        </ul>\n        <button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\u4FDD\u5B58</button>",
+					var readlist =
+						"\t<ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u5F53\u524D\u8D26\u671F\uFF1A" +
+						data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
+						"\u6708\u8D26\u671F</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6284\u8868\u72B6\u6001\uFF1A" +
+						(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" : "已抄表") +
+						"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u4E0A\u6B21\u8BFB\u6570\uFF1A" +
+						data.yonghuChaobiao.Qids +
+						"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u672C\u6B21\u8BFB\u6570\uFF1A" +
+						data.yonghuChaobiao.Zhids +
+						"</span></li>\n            <button type=\"button\" class=\"mui-btn-blue last-btn reading-btn\">\u7ACB\u5373\u6284\u8868</button>\n        </ul>",
 
-					/* 档案搜索详情欠费列表 */
-					chargeList =
+						/* 抄表搜索详情抄表列表 */
+						readingList =
+						"<ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u5F53\u524D\u8D26\u671F\uFF1A" +
+						data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
+						"\u6708\u8D26\u671F</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6284\u8868\u72B6\u6001\uFF1A" +
+						(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" : "已抄表") +
+						"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u4E0A\u6B21\u8BFB\u6570\uFF1A" +
+						data.yonghuChaobiao.Qids +
+						"</span></li>\n            <li class=\"mui-table-view-cell\">\n                <label class=\"reading-lable mui-pull-left\">\u672C\u6B21\u8BFB\u6570\uFF1A</label>\n                <input type=\"text\" class=\"mui-input-clear reading-input mui-pull-left\" placeholder=\"\u8BF7\u8F93\u5165\">\n            </li>\n        </ul>\n        <button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\u4FDD\u5B58</button>";
+				}
+				/* 档案搜索详情欠费列表 */
+				var chargeList =
 					"\n            <ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
 					data.yonghuYingShouFei.length +
 					"\u671F</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
 					bcql +
 					"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
-					qctotalje +
-					"</span></li>\n            <button type=\"button\" class=\"mui-btn-blue last-btn\">\u7ACB\u5373\u6536\u8D39</button>\n        </ul>",
-					
+					qctotalje.toFixed(2) +
+					"</span></li>\n            <button type=\"button\" class=\"mui-btn-blue last-btn costing-btn\">\u7ACB\u5373\u6536\u8D39</button>\n        </ul>",
+
 					/* 收费列表搜索收费详情 */
 					costList =
 					"\n            <ul class=\"mui-table-view user-info cost-info\">\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left\">\u6B20\u8D39\u671F\u6570\uFF1A" +
 					data.yonghuYingShouFei.length + "</span><span class=\"mui-pull-right\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
 					bcql +
-					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
-					qctotalje + "</span><span class=\"mui-pull-right\">\u6EDE\u7EB3\u91D1\uFF1A" + lateFee +
-					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left\">\u8D26\u6237\u4F59\u989D\uFF1A" +
-					totalje + "</span><span class=\"mui-pull-right\">\u672C\u6B21\u5E94\u6536\uFF1A" + qctotalje +
-					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\">\n\t\t\t\t\t<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n\t\t\t\t\t<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t\t</li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left\">\u672C\u6B21\u4F59\u989D\uFF1A" +
-					(Number(totalje) - $(".cost-input").val()) +
+					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left totalje-text\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
+					totalje.toFixed(2) + "</span><span class=\"mui-pull-right\">\u6EDE\u7EB3\u91D1\uFF1A" + lateFee.toFixed(2) +
+					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left account-balance\">\u8D26\u6237\u4F59\u989D\uFF1A" +
+					data.yonghuInfo.bcye.toFixed(2) + "</span><span class=\"mui-pull-right\">\u672C\u6B21\u5E94\u6536\uFF1A" +
+					qctotalje.toFixed(2) +
+					"</span></li>\n\t\t\t\t<li class=\"mui-table-view-cell\">\n\t\t\t\t\t<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n\t\t\t\t\t<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t\t</li>\n\t\t\t\t<li class=\"mui-table-view-cell\"><span class=\"mui-pull-left result-number\">\u672C\u6B21\u4F59\u989D\uFF1A" +
 					"</span></li>\n            </ul>\n            <button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\u786E\u8BA4\u6536\u8D39</button>";
-				
+
 				/* 存储用户列表 */
 				window.localStorage.setItem("infoList", infoList)
 				window.localStorage.setItem("costList", costList)
 				window.localStorage.setItem("readingList", readingList)
+				window.localStorage.setItem("Qids",data.yonghuChaobiao.Qids)
+				window.localStorage.setItem("Zhids",data.yonghuChaobiao.Zhids)
 				/* window.localStorage.setItem("adminList", adminList) */
-				
 				/* 如果不需要抄表就不予显示 */
-				if (data.yonghuChaobiao !== null) {
+				if (data.yonghuChaobiao!=null&&data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids) {
 					window.localStorage.setItem("readlist", readlist)
+					window.localStorage.setItem("reading","true")
 				} else {
 					window.localStorage.removeItem("readlist")
 				}
 				/* 如果为欠费就不予显示 */
 				if (JSON.stringify(data.yonghuYingShouFei) !== "[]") {
 					window.localStorage.setItem("chargeList", chargeList)
+					window.localStorage.setItem("Arrears", "true")
 				} else {
 					window.localStorage.removeItem("chargeList")
+					window.localStorage.removeItem("Arrears")
 				}
 				/* 跳转详情页 */
 				mui.openWindow(userInfo)

@@ -346,6 +346,13 @@
 	position: absolute;
 	top: 5%;
 	right: 5%;
+	background-color: #c7c7c7;
+	border: 1px solid #e6e6e6;
+}
+
+.first-btn-active {
+	border: 1px solid #007aff;
+	background-color: #007aff;
 }
 
 .last-btn {
@@ -394,9 +401,11 @@
 	display: inline-block;
 	width: 35%;
 }
-.mui-table-view-cell>.cost-record>span:first-child{
+
+.mui-table-view-cell>.cost-record>span:first-child {
 	color: #000000;
 }
+
 .cost-record span {
 	display: block;
 }

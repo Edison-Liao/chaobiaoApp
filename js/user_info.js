@@ -11,22 +11,29 @@ mui.plusReady(function() {
 		endTime = window.localStorage.getItem("endTime"),
 		userName = window.localStorage.getItem("userName"),
 		userID = window.localStorage.getItem("userID"),
+		arrears = window.localStorage.getItem("Arrears"),
+		yingShoufeiID = window.localStorage.getItem("yingshoufeiID") + ",",
+		zuticode = window.localStorage.getItem("zuticode"),
+		reading = window.localStorage.getItem("reading"),
 		readingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/MakeYongChaoBiao",
+		costingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GernarlPayMoney",
+		PrintText = "",
 		costList = {
 			url: "/pages/cost_list.html",
 			id: "cost_list.html"
 		},
 		info = {
-	
+
 			/* 抄表返回 */
-			reading: function(api, yhcode, userID, ztbz, xh, zidsInput, usersList) {
+			reading: function(api, yhcode, userID, zutiCode, xh, zidsInput, usersList) {
+
 				$.ajax({
 					url: api,
 					type: "Post",
 					data: {
 						yhcode: yhcode,
 						userId: userID,
-						zutiCode: ztbz,
+						zutiCode: zuticode,
 						xh: xh,
 						zids: zidsInput
 					},
@@ -49,8 +56,37 @@ mui.plusReady(function() {
 				});
 			},
 			/* 收费列表 */
-			costing: function() {
+			costing: function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode) {
+				$.ajax({
+					url: api,
+					type: "Post",
+					data: {
+						ickaBh: ickaBh,
+						biaoHao: "",
+						je: inputVal,
+						yingShouFeiId: yingShouFeiId,
+						remark: "",
+						userId: userID,
+						zuticode: zuticode
+					},
+					success: function success(data) {
+						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
+						PrintText = data.ResultData
+						/* 	mui.toast(data.DataMessage)
+							if (data.DataSuccess) {
+								mui.openWindow(usersList)
+							} */
+						/* mui.openWindow(usersList) */
 
+					},
+					error: function error(data) {
+						//200的响应也有可能被认定为error，responseText中没有Message部分
+						mui.alert(JSON.parse(data.responseText).Message);
+					},
+					complete: function complete(data) {
+						//after success or error
+					}
+				});
 			}
 		};
 	switch (herfIndex) {
@@ -61,20 +97,49 @@ mui.plusReady(function() {
 			break;
 		case "1":
 			$("#content").append(userInfo)
-			$("#content").append(readingList)
-			var yhCode = $(".mui-table-view-cell>span").eq(0).attr("code"),
-				ztbz = $(".mui-table-view-cell>span").eq(0).attr("ztbz"),
-				xh = $(".mui-table-view-cell>span").eq(1).attr("xh");
-			zidsInput = $(".reading-input").val();
-			console.log(window.localStorage.getItem("readBook"))
-			$("#content").on("tap", ".confirm-btn", function() {
-				var zidsInput = $(".reading-input").val();
-				info.reading(readingApi, yhCode, userID, ztbz, xh, zidsInput, costList)
-			})
+			if (reading) {
+				$("#content").append(readingList)
+				var yhCode = $(".mui-table-view-cell>span").eq(0).attr("code"),
+					xh = $(".mui-table-view-cell>span").eq(0).attr("xh");
+				$("#content").on("tap", ".confirm-btn", function() {
+					var zidsInput = $(".reading-input").val();
+					info.reading(readingApi, yhCode, userID, zuticode, xh, zidsInput, costList)
+				})
+			}
 			break;
 		case "2":
 			$("#content").append(userInfo)
 			$("#content").append(costingList)
+			var savedBleId = localStorage.getItem("bleId");
+			if (savedBleId) {
+				var bleObj = new ConnectPrinter(savedBleId);
+			} else {
+				plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
+					if (e.index === 0) {
+						mui.openWindow({
+							id: "printer.html",
+							url: "printer.html"
+						});
+					}
+				});
+			};
+			$("#content").on("tap", ".confirm-btn", function() {
+				var accountBalance = $(".account-balance").text().replace(/[^\-?\d.]/g, ''),
+					accountIndex = accountBalance.indexOf("-"),
+					costInput = Number($(".cost-input").val()),
+					totalje = Number($(".totalje-text").text),
+					resultNumber = totalje == 0 || accountIndex == 0 ? Number(accountBalance) + costInput : Number(accountBalance) -
+					costInput,
+					ickaBh = $(".user-info span").eq(0).attr("ickaBh");
+				$(".result-number").text("本次余额：" + resultNumber)
+				console.log(ickaBh + "+++++++++++" + $(".cost-input").val() + "----------" + yingShoufeiID + "------" + userID +
+					"+++++" + zuticode)
+				info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
+				//测试打印
+				bleObj.gotoPrint(PrintText);
+
+
+			})
 			break;
 		case "3":
 			$("#content").prepend(dataTime)
@@ -112,7 +177,7 @@ mui.plusReady(function() {
 						timeYhname[i] + "</span></p>\n        </li>")
 				}
 			}
-			
+
 			$('.cost-li-list').each(function(index, item) {
 
 				$(item).attr('gouqimx-id', timeGouqimxid[index]);
@@ -124,11 +189,33 @@ mui.plusReady(function() {
 			break;
 
 	}
+
 	/* $("#content").append(userInfo)
 	$("#content").append(readlist)
 	$("#content").append(chargeList) */
+	if (!arrears) {
+		$(".pre-charge-btn").addClass("first-btn-active")
+		$("#content").on("tap", ".pre-charge-btn", function() {
+			mui.openWindow(costList)
+			window.localStorage.setItem("btn-index", "0")
+
+		})
+	} else {
+		$(".pre-charge-btn").removeClass("first-btn-active")
+	}
 	$("#content").on("tap", ".cost-record-btn", function() {
 		/* 调用费用记录方法 */
 		mui.openWindow(costList)
+		window.localStorage.setItem("btn-index", "1")
 	})
+	$("#content").on("tap", ".reading-btn", function() {
+		mui.openWindow(costList)
+		window.localStorage.setItem("btn-index", "2")
+	})
+	$("#content").on("tap", ".costing-btn", function() {
+		mui.openWindow(costList)
+		window.localStorage.setItem("btn-index", "3")
+	})
+
+
 })

@@ -210,6 +210,7 @@ mui.plusReady(function() {
 			case "4":
 				mui.openWindow(userInfo)
 				$("#content").append(meContent)
+				window.localStorage.removeItem("userName")
 				break;
 
 		}

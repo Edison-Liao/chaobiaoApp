@@ -24,13 +24,15 @@ mui.plusReady(function () {
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
 						userName = data.ResultData.UserName,
 						userId = data.ResultData.userId,
-						UserDepart=data.ResultData.UserDepart;
+						UserDepart=data.ResultData.UserDepart,
+						zuticode=data.ResultData.zuticode;
 					if (data.DataSuccess) {
 						mui.openWindow(openInfo)
 						window.localStorage.setItem("userID", userId);
 						window.localStorage.setItem("userName", userName);
 						window.localStorage.setItem("userPass", userPass);
 						window.localStorage.setItem("UserDepart", UserDepart);
+						window.localStorage.setItem("zuticode",zuticode)
 						mui.toast('登录成功');
 					} else {
 						mui.alert(mes)
