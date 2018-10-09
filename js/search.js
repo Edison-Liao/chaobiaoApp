@@ -6,6 +6,7 @@ mui.plusReady(function() {
 		UserDepart = window.localStorage.getItem("UserDepart"),
 		apiArr = ["GetYonghuList", "GetYonghuChaoBiao", "GetYonghuList", "GetYonghuGouqiMx"],
 		titleArr = ["档案查询", "抄表录入", "费用收取", "收费日报", "我的档案"],
+		newDate = window.localStorage.getItem("newDate"),
 		fileContent =
 		"<form class=\"mui-input-group condition-list\">\n\t\t\t<div class=\"mui-input-row selection-conditions\" id=\"community\">\n\t\t\t\t<label>\u6240\u5C5E\u5C0F\u533A\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u9009\u62E9\">\n\t\t\t</div> \n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u7528\u6237\u7F16\u53F7\uFF1A</label>\n\t\t\t\t<input type=\"number\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u7528\u6237\u59D3\u540D\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u8054\u7CFB\u5730\u5740\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t</form>",
 		readingContent =
@@ -13,8 +14,12 @@ mui.plusReady(function() {
 		chargeContent =
 		"<form class=\"mui-input-group condition-list\">\n\t\t\t<div class=\"mui-input-row selection-conditions\" id=\"community\">\n\t\t\t\t<label>\u6240\u5C5E\u5C0F\u533A\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u9009\u62E9\">\n\t\t\t</div> \n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u7528\u6237\u7F16\u53F7\uFF1A</label>\n\t\t\t\t<input type=\"number\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u7528\u6237\u59D3\u540D\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t\t<div class=\"mui-input-row selection-conditions\">\n\t\t\t\t<label>\u8054\u7CFB\u5730\u5740\uFF1A</label>\n\t\t\t\t<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\">\n\t\t\t</div>\n\t\t</form>",
 		dailyContent =
-		"<form class=\"mui-input-group condition-list\">\n        <div class=\"mui-input-row selection-conditions start-time\">\n            <label>\u5F00\u59CB\u65F6\u95F4\uFF1A</label>\n            <input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u9009\u62E9\">\n        </div>\n        <div class=\"mui-input-row selection-conditions end-time\">\n            <label>\u7ED3\u675F\u65F6\u95F4 \uFF1A</label>\n            <input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u9009\u62E9\">\n        </div>\n        <div class=\"mui-input-row selection-conditions\">\n            <label>\u64CD\u4F5C\u5458\uFF1A</label>\n            <input type=\"text\" class=\"mui-input-clear admin-name\" value=" +
-		userName + " readonly=\"readonly\">\n        </div>\n    </form>",
+		"<form class=\"mui-input-group condition-list\">        \n<div class=\"mui-input-row selection-conditions start-time\">            \n<label>\u5F00\u59CB\u65F6\u95F4\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u9009\u62E9\" value=" +
+		newDate +
+		" >\n</div>\n<div class=\"mui-input-row selection-conditions end-time\">            \n<label>\u7ED3\u675F\u65F6\u95F4\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\" value=" +
+		newDate +
+		">\n</div>\n<div class=\"mui-input-row selection-conditions\">            \n<label>\u64CD\u4F5C\u5458</label>            \n<input type=\"text\" class=\"mui-input-clear admin-name\" readonly=\"readonly\" value=" +
+		userName + ">\n</div>\n</form>",
 		meContent =
 		"<ul class=\"mui-table-view user-info\">\n    <li class=\"mui-table-view-cell\"><span class=\"\">\u767B\u9646\u8D26\u53F7\uFF1A" +
 		userID +
@@ -42,6 +47,9 @@ mui.plusReady(function() {
 				var herfIndex = window.localStorage.getItem(herf);
 				titleEle.text(titleArr[herfIndex]);
 				contentEle.prepend(contentArr[herfIndex]);
+				if (herfIndex == "4") {
+					$(".search-btn").addClass("search-btn-none")
+				}
 			},
 			/* 用戶列表展示功能
 			 *
@@ -172,6 +180,7 @@ mui.plusReady(function() {
 					adr: condition4
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
+
 				break;
 			case "1":
 				data = {
@@ -183,6 +192,7 @@ mui.plusReady(function() {
 					yhphone: condition5
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
+
 				break;
 			case "2":
 				data = {
@@ -194,6 +204,7 @@ mui.plusReady(function() {
 					adr: condition4
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
+
 				break;
 			case "3":
 				data = {
@@ -206,16 +217,11 @@ mui.plusReady(function() {
 				window.localStorage.setItem("startTime", startTime)
 				window.localStorage.setItem("endTime", endTime)
 				loadPages.time("herfIndex", apiArr, data, userInfo)
-				break;
-			case "4":
-				mui.openWindow(userInfo)
-				$("#content").append(meContent)
-				window.localStorage.removeItem("userName")
+
 				break;
 
 		}
-		/* loadPages.usersList("herfIndex", apiArr, data, usersList); */
-		$(".selection-conditions>input").not(".admin-name").val("")
+		$(".selection-conditions>input").not(".admin-name,.start-time>input,.end-time>input").val("")
 		window.localStorage.removeItem("accountBook")
 		window.localStorage.removeItem("readBook")
 

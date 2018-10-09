@@ -78,6 +78,7 @@ mui.plusReady(function () {
 	mui(".footer-nav").on("tap", "#go-out", function () {
 		clickNum++;
 		reading_method.goOut(clickNum, ouTmes)
+		window.localStorage.removeItem("userName")
 	})
 	/*调用点击跳转事件*/
 	mui(".mui-grid-9").on("tap", ".mui-media", function () {

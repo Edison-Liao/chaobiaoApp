@@ -25,7 +25,7 @@ mui.plusReady(function() {
 						data = JSON.parse(data);
 
 					for (var i = 0; i < data.length; i++) {
-						if (data[i].sfztcode == "2") {
+						if (data[i].sfztcode == "3") {
 							$(".costing-list").append("<li class=\"mui-table-view-cell\" caobiaoid=\"" + data[i].caobiaoid +
 								"\" gouqimxid=\"" + data[i].gouqimxid +
 								"\">\n        <p class=\"cost-record mui-pull-left\"><span class=\"cost-record-left\">\u8D26\u671F:" +
@@ -108,7 +108,6 @@ mui.plusReady(function() {
 			break;
 		case "2":
 			$("#content").append(readingList)
-			console.log(typeof(Qids)+"-----------"+typeof(Zhids))
 			if (Qids != "0" && Zhids != "0") {
 				yonghuInfo(userInfoApi, infoId, "#content")
 			}

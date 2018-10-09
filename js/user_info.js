@@ -1,12 +1,13 @@
 mui.init();
 mui.plusReady(function() {
-	var userInfo = window.localStorage.getItem("infoList"),
-		readlist = window.localStorage.getItem("readlist"),
-		infoId = window.localStorage.getItem("data-id"),
+	var infoId = window.localStorage.getItem("data-id"),
 		herfIndex = window.localStorage.getItem("herfIndex"),
-		chargeList = window.localStorage.getItem("chargeList"),
-		costingList = window.localStorage.getItem("costList"),
-		readingList = window.localStorage.getItem("readingList"),
+		userInfo1 = window.localStorage.getItem("infoList1"),
+		userInfo2 = window.localStorage.getItem("infoList2"),
+		readList1 = window.localStorage.getItem("readList1"),
+		chargeList1 = window.localStorage.getItem("chargeList1"),
+		readList2 = window.localStorage.getItem("readList2"),
+		chargeList2 = window.localStorage.getItem("chargeList2"),
 		dataTime = window.localStorage.getItem("dataTime"),
 		endTime = window.localStorage.getItem("endTime"),
 		userName = window.localStorage.getItem("userName"),
@@ -15,6 +16,8 @@ mui.plusReady(function() {
 		yingShoufeiID = window.localStorage.getItem("yingshoufeiID") + ",",
 		zuticode = window.localStorage.getItem("zuticode"),
 		reading = window.localStorage.getItem("reading"),
+		Qids = window.localStorage.getItem("Qids"),
+		Zhids = window.localStorage.getItem("Zhids"),
 		readingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/MakeYongChaoBiao",
 		costingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GernarlPayMoney",
 		PrintText = "",
@@ -91,14 +94,25 @@ mui.plusReady(function() {
 		};
 	switch (herfIndex) {
 		case "0":
-			$("#content").append(userInfo)
-			$("#content").append(readlist)
-			$("#content").append(chargeList)
+			$("#content").append(userInfo1)
+			if (readList1 !== undefined) {
+				$("#content").append(readList1)
+
+			} else if (chargeList1 !== undefined) {
+				$("#content").append(chargeList1)
+
+
+			}
+
+
 			break;
 		case "1":
-			$("#content").append(userInfo)
-			if (reading) {
-				$("#content").append(readingList)
+			$("#content").append(userInfo2)
+			if (readList2 == "undefined") {
+				window.localStorage.removeItem("readList2")
+			}
+			if (Qids == Zhids && Qids != "0" && Zhids != "0") {
+				$("#content").append(readingList2)
 				var yhCode = $(".mui-table-view-cell>span").eq(0).attr("code"),
 					xh = $(".mui-table-view-cell>span").eq(0).attr("xh");
 				$("#content").on("tap", ".confirm-btn", function() {
@@ -108,8 +122,11 @@ mui.plusReady(function() {
 			}
 			break;
 		case "2":
-			$("#content").append(userInfo)
-			$("#content").append(costingList)
+			$("#content").append(userInfo2)
+			if (chargeList2 == "undefined") {
+				window.localStorage.removeItem("chargeList2")
+			}
+			$("#content").append(chargeList2)
 			var savedBleId = localStorage.getItem("bleId");
 			if (savedBleId) {
 				var bleObj = new ConnectPrinter(savedBleId);
@@ -131,9 +148,7 @@ mui.plusReady(function() {
 					resultNumber = totalje == 0 || accountIndex == 0 ? Number(accountBalance) + costInput : Number(accountBalance) -
 					costInput,
 					ickaBh = $(".user-info span").eq(0).attr("ickaBh");
-				$(".result-number").text("本次余额：" + resultNumber)
-				console.log(ickaBh + "+++++++++++" + $(".cost-input").val() + "----------" + yingShoufeiID + "------" + userID +
-					"+++++" + zuticode)
+				$(".result-number").text("本次余额：" + resultNumber);
 				info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
 				//测试打印
 				bleObj.gotoPrint(PrintText);
@@ -210,7 +225,8 @@ mui.plusReady(function() {
 	})
 	$("#content").on("tap", ".reading-btn", function() {
 		mui.openWindow(costList)
-		window.localStorage.setItem("btn-index", "2")
+		/* 	window.localStorage.setItem("btn-index", "2") */
+		window.localStorage.setItem("herfIndex", "1")
 	})
 	$("#content").on("tap", ".costing-btn", function() {
 		mui.openWindow(costList)

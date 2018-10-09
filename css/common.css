@@ -320,7 +320,9 @@
 	margin-top: 0 !important;
 	color: #007BE6 !important;
 }
-
+.search-btn-none{
+	display: none;
+}
 
 /************************详情列表部分********************/
 
