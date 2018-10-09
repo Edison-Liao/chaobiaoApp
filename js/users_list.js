@@ -103,9 +103,11 @@ mui.plusReady(function() {
 							"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u4E0A\u6B21\u8BFB\u6570\uFF1A" +
 							data.yonghuChaobiao.Qids +
 							"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u672C\u6B21\u8BFB\u6570\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear reading-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u4FDD\u5B58\n</button>"
+						window.localStorage.setItem("Qids", data.yonghuChaobiao.Qids)
+						window.localStorage.setItem("Zhids", data.yonghuChaobiao.Zhids)
 					}
 
-					if (JSON.stringify(data.yonghuYingShouFei) !== "[]" ) {
+					if (JSON.stringify(data.yonghuYingShouFei) !== "[]") {
 						/* 档案搜索详情欠费列表 */
 						var chargeList1 =
 							"<ul class=\"mui-table-view user-info\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
@@ -135,8 +137,7 @@ mui.plusReady(function() {
 					window.localStorage.setItem("readList2", readList2)
 					window.localStorage.setItem("chargeList1", chargeList1)
 					window.localStorage.setItem("chargeList2", chargeList2)
-					window.localStorage.setItem("Qids", data.yonghuChaobiao.Qids)
-					window.localStorage.setItem("Zhids", data.yonghuChaobiao.Zhids)
+
 
 					/* 跳转详情页 */
 					mui.openWindow(userInfo)

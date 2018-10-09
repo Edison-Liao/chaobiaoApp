@@ -94,23 +94,19 @@ mui.plusReady(function() {
 		};
 	switch (herfIndex) {
 		case "0":
-			$("#content").append(userInfo1)
-			if (readList1 !== undefined) {
-				$("#content").append(readList1)
 
+			if (readList1 !== undefined && chargeList1 !== undefined) {
+				$("#content").append(userInfo1)
 			} else if (chargeList1 !== undefined) {
+				$("#content").append(userInfo1)
+				$("#content").append(readList1)
+			} else {
+				$("#content").append(userInfo1)
 				$("#content").append(chargeList1)
-
-
 			}
-
-
 			break;
 		case "1":
 			$("#content").append(userInfo2)
-			if (readList2 == "undefined") {
-				window.localStorage.removeItem("readList2")
-			}
 			if (Qids == Zhids && Qids != "0" && Zhids != "0") {
 				$("#content").append(readingList2)
 				var yhCode = $(".mui-table-view-cell>span").eq(0).attr("code"),
@@ -223,6 +219,7 @@ mui.plusReady(function() {
 		mui.openWindow(costList)
 		window.localStorage.setItem("btn-index", "1")
 	})
+	
 	$("#content").on("tap", ".reading-btn", function() {
 		mui.openWindow(costList)
 		/* 	window.localStorage.setItem("btn-index", "2") */

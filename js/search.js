@@ -163,6 +163,7 @@ mui.plusReady(function() {
 			condition4 = $(".selection-conditions>input").eq(3).val(),
 			condition5 = $(".selection-conditions>input").eq(4).val(),
 			condition6 = window.localStorage.getItem("readBook"),
+			accountBook=$(".selection-conditions>input").eq(0).val(),
 			index = window.localStorage.getItem("herfIndex"),
 			dataArr = window.localStorage.getItem("dataArr"),
 			userID = window.localStorage.getItem("userID"),
@@ -222,8 +223,8 @@ mui.plusReady(function() {
 
 		}
 		$(".selection-conditions>input").not(".admin-name,.start-time>input,.end-time>input").val("")
-		window.localStorage.removeItem("accountBook")
-		window.localStorage.removeItem("readBook")
+/* 		window.localStorage.removeItem("accountBook")
+		window.localStorage.removeItem("readBook") */
 
 	});
 });
