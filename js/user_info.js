@@ -3,9 +3,9 @@ mui.plusReady(function() {
 	var infoId = window.localStorage.getItem("data-id"),
 		herfIndex = window.localStorage.getItem("herfIndex"),
 		userInfo1 = window.localStorage.getItem("infoList1"),
-		userInfo2 = window.localStorage.getItem("infoList2"),
 		readList1 = window.localStorage.getItem("readList1"),
 		chargeList1 = window.localStorage.getItem("chargeList1"),
+		userInfo2 = window.localStorage.getItem("infoList2"),
 		readList2 = window.localStorage.getItem("readList2"),
 		chargeList2 = window.localStorage.getItem("chargeList2"),
 		dataTime = window.localStorage.getItem("dataTime"),
@@ -18,9 +18,9 @@ mui.plusReady(function() {
 		reading = window.localStorage.getItem("reading"),
 		Qids = window.localStorage.getItem("Qids"),
 		Zhids = window.localStorage.getItem("Zhids"),
+		PrintText = window.localStorage.getItem("PrintText"),
 		readingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/MakeYongChaoBiao",
 		costingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GernarlPayMoney",
-		PrintText = "",
 		costList = {
 			url: "/pages/cost_list.html",
 			id: "cost_list.html"
@@ -74,7 +74,7 @@ mui.plusReady(function() {
 					},
 					success: function success(data) {
 						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
-						PrintText = data.ResultData
+						window.localStorage.setItem("PrintText",data.ResultData)
 						/* 	mui.toast(data.DataMessage)
 							if (data.DataSuccess) {
 								mui.openWindow(usersList)
@@ -92,36 +92,24 @@ mui.plusReady(function() {
 				});
 			}
 		};
-	switch (herfIndex) {
-		case "0":
+	/* 立即抄表按钮 */
+	$("#content").on("tap", ".reading-btn", function() {
+		$("#content").html(userInfo2)
+		$("#content").append(readList2)
+		var xh = $(".mui-table-view-cell").eq(0).attr("xh"),
+			yhCode = $(".yonghu-info-code").eq(0).attr("code");
+		/* 保存按钮 */
+		$("#content").on("tap", ".confirm-btn", function() {
+			var zidsInput = $(".reading-input").val();
+			info.reading(readingApi, yhCode, userID, zuticode, xh, zidsInput, costList)
+		})
 
-			if (readList1 !== undefined && chargeList1 !== undefined) {
-				$("#content").append(userInfo1)
-			} else if (chargeList1 !== undefined) {
-				$("#content").append(userInfo1)
-				$("#content").append(readList1)
-			} else {
-				$("#content").append(userInfo1)
-				$("#content").append(chargeList1)
-			}
-			break;
-		case "1":
-			$("#content").append(userInfo2)
-			if (Qids == Zhids && Qids != "0" && Zhids != "0") {
-				$("#content").append(readingList2)
-				var yhCode = $(".mui-table-view-cell>span").eq(0).attr("code"),
-					xh = $(".mui-table-view-cell>span").eq(0).attr("xh");
-				$("#content").on("tap", ".confirm-btn", function() {
-					var zidsInput = $(".reading-input").val();
-					info.reading(readingApi, yhCode, userID, zuticode, xh, zidsInput, costList)
-				})
-			}
-			break;
-		case "2":
-			$("#content").append(userInfo2)
-			if (chargeList2 == "undefined") {
-				window.localStorage.removeItem("chargeList2")
-			}
+
+	})
+	/* 立即收费按钮 */
+	$("#content").on("tap", ".costing-btn", function() {
+		$("#content").html(userInfo2)
+		if (chargeList2 !== "undefined") {
 			$("#content").append(chargeList2)
 			var savedBleId = localStorage.getItem("bleId");
 			if (savedBleId) {
@@ -130,28 +118,103 @@ mui.plusReady(function() {
 				plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
 					if (e.index === 0) {
 						mui.openWindow({
-							id: "printer.html",
-							url: "printer.html"
+							id: "pages/printer.html",
+							url: "pages/printer.html"
 						});
 					}
 				});
 			};
+			/* 确认收费按钮 */
 			$("#content").on("tap", ".confirm-btn", function() {
+			
 				var accountBalance = $(".account-balance").text().replace(/[^\-?\d.]/g, ''),
 					accountIndex = accountBalance.indexOf("-"),
 					costInput = Number($(".cost-input").val()),
 					totalje = Number($(".totalje-text").text),
-					resultNumber = totalje == 0 || accountIndex == 0 ? Number(accountBalance) + costInput : Number(accountBalance) -
+					resultNumber = totalje == 0 || accountIndex == 0 ? Number(accountBalance) + costInput : Number(
+						accountBalance) -
 					costInput,
-					ickaBh = $(".user-info span").eq(0).attr("ickaBh");
+					ickaBh = $(".yonghu-info-number").eq(0).attr("ickaBh");
 				$(".result-number").text("本次余额：" + resultNumber);
 				info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
+				console.log(PrintText)
+
 				//测试打印
-				bleObj.gotoPrint(PrintText);
+				/* bleObj.gotoPrint(PrintText); */
 
 
 			})
+		}
+
+	})
+
+	/* 根据不同的点击id渲染不同的页面 */
+	switch (herfIndex) {
+		/* 从档案查询id点击查询 */
+		case "0":
+			$("#content").append(userInfo1)
+			if (readList1 !== "undefined" && Qids == Zhids) {
+				$("#content").append(readList1)
+			}
+			if (chargeList1 !== "undefined") {
+				$("#content").append(chargeList1)
+			}
 			break;
+			/* 从抄表录入id点击查询 */
+		case "1":
+			$("#content").append(userInfo1)
+			if (Qids == Zhids && readList2 !== "undefined") {
+				$("#content").append(readList2)
+				var xh = $(".mui-table-view-cell").eq(0).attr("xh"),
+					yhCode = $(".yonghu-info-code").eq(0).attr("code");
+				/* 保存按钮 */
+				$("#content").on("tap", ".confirm-btn", function() {
+					window.localStorage.setItem("btn-index", "4")
+					var zidsInput = $(".reading-input").val();
+					info.reading(readingApi, yhCode, userID, zuticode, xh, zidsInput, costList)
+				})
+			}
+			break;
+			/* 从费用收取id点击查询 */
+		case "2":
+			$("#content").append(userInfo1)
+			if (chargeList2 !== "undefined") {
+				$("#content").append(chargeList2)
+				var savedBleId = localStorage.getItem("bleId");
+				if (savedBleId) {
+					var bleObj = new ConnectPrinter(savedBleId);
+				} else {
+					plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
+						if (e.index === 0) {
+							mui.openWindow({
+								id: "pages/printer.html",
+								url: "pages/printer.html"
+							});
+						}
+					});
+				};
+				/* 确认收费按钮 */
+				$("#content").on("tap", ".confirm-btn", function() {
+					console.log(typeof(PrintText))
+					window.localStorage.setItem("btn-index", "5")
+					var accountBalance = $(".account-balance").text().replace(/[^\-?\d.]/g, ''),
+						accountIndex = accountBalance.indexOf("-"),
+						costInput = Number($(".cost-input").val()),
+						totalje = Number($(".totalje-text").text),
+						resultNumber = totalje == 0 || accountIndex == 0 ? Number(accountBalance) + costInput : Number(accountBalance) -
+						costInput,
+						ickaBh = $(".yonghu-info-number").eq(0).attr("ickaBh");
+					$(".result-number").text("本次余额：" + resultNumber);
+					console.log(PrintText)
+					info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
+					//测试打印
+					/* bleObj.gotoPrint(PrintText); */
+
+
+				})
+			}
+			break;
+			/* 从收费日报id点击查询 */
 		case "3":
 			$("#content").prepend(dataTime)
 			var timeYhcode = window.localStorage.getItem("timeYhcode").length > 1 ? window.localStorage.getItem("timeYhcode").split(
@@ -189,23 +252,23 @@ mui.plusReady(function() {
 				}
 			}
 
+			/* 购气明细记录id */
 			$('.cost-li-list').each(function(index, item) {
 
 				$(item).attr('gouqimx-id', timeGouqimxid[index]);
 			});
 
+			/* 点击列表每一个获取购气明细id */
 			$('.cost-list').on("tap", ".mui-table-view-cell", function() {
 				console.log($(this).attr("gouqimx-id"))
 			})
 			break;
 
 	}
-
-	/* $("#content").append(userInfo)
-	$("#content").append(readlist)
-	$("#content").append(chargeList) */
+	/* 点击预收费，费用记录，立即抄表，立即收费，保存，确认收费记录不同的id */
 	if (!arrears) {
 		$(".pre-charge-btn").addClass("first-btn-active")
+		/* 预收费按钮 */
 		$("#content").on("tap", ".pre-charge-btn", function() {
 			mui.openWindow(costList)
 			window.localStorage.setItem("btn-index", "0")
@@ -214,21 +277,14 @@ mui.plusReady(function() {
 	} else {
 		$(".pre-charge-btn").removeClass("first-btn-active")
 	}
+	/* 费用记录按钮 */
 	$("#content").on("tap", ".cost-record-btn", function() {
-		/* 调用费用记录方法 */
+
 		mui.openWindow(costList)
 		window.localStorage.setItem("btn-index", "1")
 	})
-	
-	$("#content").on("tap", ".reading-btn", function() {
-		mui.openWindow(costList)
-		/* 	window.localStorage.setItem("btn-index", "2") */
-		window.localStorage.setItem("herfIndex", "1")
-	})
-	$("#content").on("tap", ".costing-btn", function() {
-		mui.openWindow(costList)
-		window.localStorage.setItem("btn-index", "3")
-	})
+
+
 
 
 })

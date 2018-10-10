@@ -8,6 +8,8 @@ mui.plusReady(function() {
 		window.localStorage.getItem("yhcode"),
 		AddressMS = window.localStorage.getItem("AddressMS").length > 1 ? window.localStorage.getItem("AddressMS").split(
 			",") : window.localStorage.getItem("AddressMS"),
+		isChaoBiao = window.localStorage.getItem("isChaoBiao").length > 1 ? window.localStorage.getItem("isChaoBiao").split(
+			",") : window.localStorage.getItem("isChaoBiao"),
 		herfIndex = window.localStorage.getItem("herfIndex"),
 		dataTwo = window.localStorage.getItem("dataTwo"),
 		usersinfoApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuInfo",
@@ -31,6 +33,7 @@ mui.plusReady(function() {
 						/* 滞纳金 */
 						lateFee = 0,
 						yingshoufeiID = [];
+
 					/* 欠费气量和金额累加 */
 					for (var i = 0; i < data.yonghuYingShouFei.length; i++) {
 						yingshoufeiID.push(data.yonghuYingShouFei[i].yshoufeiid)
@@ -81,10 +84,10 @@ mui.plusReady(function() {
 						"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"yonghu-info-standard\">\u4EF7\u683C\u6807\u51C6:" +
 						data.yonghuInfo.JGName + "</span>\n</li>\n</ul>";
 
-					if (data.yonghuChaobiao != null) {
+					if (data.yonghuChaobiao !== null) {
 						/* 档案搜索详情抄表列表 */
 						var readList1 =
-							"<ul class=\"mui-table-view user-info\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u5F53\u524D\u8D26\u671F\uFF1A" +
+							"<ul class=\"mui-table-view user-info reading-true\" reading=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u5F53\u524D\u8D26\u671F\uFF1A" +
 							data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
 							"\u6708\u8D26\u671F</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u6284\u8868\u72B6\u6001\uFF1A" +
 							(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" : "已抄表") +
@@ -96,7 +99,7 @@ mui.plusReady(function() {
 
 						/* 抄表搜索详情抄表列表 */
 						var readList2 =
-							"<ul class=\"mui-table-view user-info\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u5F53\u524D\u8D26\u671F\uFF1A" +
+							"<ul class=\"mui-table-view user-info reading-true\" reading=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u5F53\u524D\u8D26\u671F\uFF1A" +
 							data.yonghuChaobiao.kjyear + "\u5E74" + data.yonghuChaobiao.period +
 							"\u5E74\u8D26\u671F\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\n\u6284\u8868\u72B6\u6001\uFF1A" +
 							(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" : "已抄表") +
@@ -105,12 +108,13 @@ mui.plusReady(function() {
 							"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u672C\u6B21\u8BFB\u6570\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear reading-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u4FDD\u5B58\n</button>"
 						window.localStorage.setItem("Qids", data.yonghuChaobiao.Qids)
 						window.localStorage.setItem("Zhids", data.yonghuChaobiao.Zhids)
+
 					}
 
 					if (JSON.stringify(data.yonghuYingShouFei) !== "[]") {
 						/* 档案搜索详情欠费列表 */
 						var chargeList1 =
-							"<ul class=\"mui-table-view user-info\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
+							"<ul class=\"mui-table-view user-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
 							data.yonghuYingShouFei.length +
 							"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
 							bcql +
@@ -120,7 +124,7 @@ mui.plusReady(function() {
 
 						/* 收费列表搜索收费详情 */
 						var chargeList2 =
-							"<ul class=\"mui-table-view user-info cost-info\">\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left\">\u6B20\u8D39\u671F\u6570\uFF1A" +
+							"<ul class=\"mui-table-view user-info cost-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left\">\u6B20\u8D39\u671F\u6570\uFF1A" +
 							data.yonghuYingShouFei.length + "</span>\n<span class=\"mui-pull-right\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
 							bcql +
 							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left totalje-text\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
@@ -128,7 +132,8 @@ mui.plusReady(function() {
 							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left account-balance\">\n\u8D26\u6237\u4F59\u989D\uFF1A" +
 							data.yonghuInfo.bcye.toFixed(2) +
 							"\n</span>\n<span class=\"mui-pull-right\">\u672C\u6B21\u5E94\u6536\uFF1A" + qctotalje.toFixed(2) +
-							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left result-number\">\u672C\u6B21\u4F59\u989D\uFF1A\n</span>\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u786E\u8BA4\u6536\u8D39\n</button>\";\n";
+							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left result-number\">\u672C\u6B21\u4F59\u989D\uFF1A\n</span>\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u786E\u8BA4\u6536\u8D39\n</button>\n";
+
 					}
 					/* 存储用户列表 */
 					window.localStorage.setItem("infoList1", infoList1)
@@ -154,6 +159,7 @@ mui.plusReady(function() {
 			})
 		};
 	for (var i = 0; i < yhname.length; i++) {
+
 		/* 在档案查询显示内容 */
 		if (dataTwo == "null" && herfIndex !== "1") {
 			$(".users-list").append(
@@ -162,14 +168,14 @@ mui.plusReady(function() {
 				"</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\">\u8054\u7CFB\u5730\u5740: <span class=\"address\">" +
 				AddressMS[i] + "</span></p>\n         </li>");
 			/* 抄表录入显示已抄表 */
-		} else if (dataTwo == "true" && herfIndex == "1") {
+		} else if (isChaoBiao[i] == "false" && herfIndex == "1") {
 			$(".users-list").append(
 				"<li class=\"mui-table-view-cell\">\n            <p class=\"name-table-number\"><span class=\"mui-pull-left users-name\">\u59D3\u540D: " +
 				yhname[i] + "</span><span class=\"users-number mui-pull-left\">" + yhcode[i] +
 				"</span><span class=\"mui-pull-left is-read is-read-true\">\u5DF2\u6284\u8868</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\">\u8054\u7CFB\u5730\u5740: <span class=\"address\">" +
 				AddressMS[i] + "</span></p>\n        </li>");
 			/* 抄表录入显示未抄表 */
-		} else if (dataTwo == "false" && herfIndex == "1") {
+		} else if (isChaoBiao[i] == "true" && herfIndex == "1") {
 			$(".users-list").append(
 				"<li class=\"mui-table-view-cell\">\n            <p class=\"name-table-number\"><span class=\"mui-pull-left users-name\">\u59D3\u540D: " +
 				yhname[i] + "</span><span class=\"users-number mui-pull-left\">" + yhcode[i] +

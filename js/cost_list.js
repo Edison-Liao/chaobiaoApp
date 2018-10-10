@@ -3,22 +3,23 @@ mui.plusReady(function() {
 	var costApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuGouqiMxBybyUser",
 		userInfoApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuInfo",
 		infoId = window.localStorage.getItem("data-id"),
+		herfIndex = window.localStorage.getItem("herfIndex"),
 		infoList2 = window.localStorage.getItem("infoList2"),
 		btnIndex = window.localStorage.getItem("btn-index"),
-		readingList = window.localStorage.getItem("readingList"),
-		costingList = window.localStorage.getItem("costList"),
+		readList2 = window.localStorage.getItem("readList2"),
+		chargeList2 = window.localStorage.getItem("chargeList2"),
 		arrears = window.localStorage.getItem("Arrears"),
 		Qids = window.localStorage.getItem("Qids"),
 		Zhids = window.localStorage.getItem("Zhids"),
 		/* 获取收费记录方法 */
-		costRecord = function(api, data) {
+		costRecord = function(api, infoId) {
 			$.ajax({
 				url: api,
 				type: "Post",
 				data: {
 					pageNow: 1,
 					pageSize: 100,
-					yonghuId: data
+					yonghuId: infoId
 				},
 				success: function success(data) {
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue).ResultData,
@@ -60,6 +61,7 @@ mui.plusReady(function() {
 
 			});
 		},
+		/* 抄表记录 */
 		yonghuInfo = function(api, infoId, content) {
 			$.ajax({
 				url: api,
@@ -85,6 +87,14 @@ mui.plusReady(function() {
 						"<li class='mui-table-view-cell'>" + "<span>" + "二阶单价：" + data.yonghuChaobiao.jg2 + "</span>" + "</li>" +
 						"<li class='mui-table-view-cell'>" + "<span>" + "二阶气费：" + (Number(data.yonghuChaobiao.bcql2) * Number(data.yonghuChaobiao
 							.jg2)) + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "三阶气量：" + data.yonghuChaobiao.bcql3 + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "三阶单价：" + data.yonghuChaobiao.jg3 + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "三阶气费：" + (Number(data.yonghuChaobiao.bcql3) * Number(data.yonghuChaobiao
+							.jg3)) + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "四阶气量：" + data.yonghuChaobiao.bcql4 + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "四阶单价：" + data.yonghuChaobiao.jg4 + "</span>" + "</li>" +
+						"<li class='mui-table-view-cell'>" + "<span>" + "四阶气费：" + (Number(data.yonghuChaobiao.bcql4) * Number(data.yonghuChaobiao
+							.jg4)) + "</span>" + "</li>" +
 						"</ul>");
 
 				},
@@ -100,22 +110,15 @@ mui.plusReady(function() {
 			});
 		};
 	$("#content").prepend(infoList2)
-	console.log(infoId)
 	switch (btnIndex) {
-		case "0":
-			$("#content").append(costingList)
-			break;
 		case "1":
-			costRecord(costApi, infoId)
+			costRecord(userInfoApi, infoId)
 			break;
 		case "2":
-			$("#content").append(readingList)
-			if (Qids != "0" && Zhids != "0") {
-				yonghuInfo(userInfoApi, infoId, "#content")
-			}
+			$("#content").append(readList2)
 			break;
-		case "3":
-			$("#content").append(costingList)
+		case "4":
+			yonghuInfo(userInfoApi, infoId, "#content")
 			break;
 	}
 

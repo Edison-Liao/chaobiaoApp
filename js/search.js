@@ -67,13 +67,15 @@ mui.plusReady(function() {
 							yhname = [],
 							yonhuID = [],
 							yhcode = [],
-							AddressMS = [];
+							AddressMS = [],
+							isChaoBiao=[];
 						for (var x in data.ResultData) {
 							yhname.push(data.ResultData[x].yhname)
 							yonhuID.push(data.ResultData[x].yonhuID)
 							yhcode.push(data.ResultData[x].yhcode)
 							AddressMS.push((data.ResultData[x].AddressMS == undefined ? data.ResultData[x].adr : data.ResultData[x].AddressMS))
-
+							isChaoBiao.push(data.ResultData[x].Qids==data.ResultData[x].Zhids)
+							/* console.log(data.ResultData[x].Qids==data.ResultData[x].Zhids) */
 						}
 						window.localStorage.setItem("yhname", yhname)
 						window.localStorage.setItem("yonhuID", yonhuID)
@@ -81,6 +83,7 @@ mui.plusReady(function() {
 						window.localStorage.setItem("AddressMS", AddressMS)
 						dataTwo == null ? window.localStorage.setItem("dataTwo", dataTwo) : window.localStorage.setItem("dataTwo",
 							dataTwo.isRead)
+						 window.localStorage.setItem("isChaoBiao", isChaoBiao)
 						mui.openWindow(usersList)
 
 					},
@@ -163,7 +166,7 @@ mui.plusReady(function() {
 			condition4 = $(".selection-conditions>input").eq(3).val(),
 			condition5 = $(".selection-conditions>input").eq(4).val(),
 			condition6 = window.localStorage.getItem("readBook"),
-			accountBook=$(".selection-conditions>input").eq(0).val(),
+			accountBook = $(".selection-conditions>input").eq(0).val(),
 			index = window.localStorage.getItem("herfIndex"),
 			dataArr = window.localStorage.getItem("dataArr"),
 			userID = window.localStorage.getItem("userID"),
@@ -193,7 +196,6 @@ mui.plusReady(function() {
 					yhphone: condition5
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
-
 				break;
 			case "2":
 				data = {
@@ -223,8 +225,8 @@ mui.plusReady(function() {
 
 		}
 		$(".selection-conditions>input").not(".admin-name,.start-time>input,.end-time>input").val("")
-/* 		window.localStorage.removeItem("accountBook")
-		window.localStorage.removeItem("readBook") */
+		/* 		window.localStorage.removeItem("accountBook")
+				window.localStorage.removeItem("readBook") */
 
 	});
 });
