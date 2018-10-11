@@ -61,7 +61,11 @@ mui.plusReady(function() {
 					url: api + herf[index],
 					type: "Post",
 					data: data,
+					beforeSend: function() {
+						plus.nativeUI.showWaiting("等待中");
+					},
 					success: function success(data) {
+						plus.nativeUI.closeWaiting();
 						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
 							dataTwo = data.ResultDataTwo,
 							yhname = [],
@@ -103,7 +107,11 @@ mui.plusReady(function() {
 					url: api + herf[index],
 					type: "POST",
 					data: data,
-					success: function(data) {
+					beforeSend: function() {
+						plus.nativeUI.showWaiting("等待中");
+					},
+					success: function success(data) {
+						plus.nativeUI.closeWaiting();
 						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue).ResultData,
 							data = JSON.parse(data),
 							startTime = window.localStorage.getItem("startTime"),

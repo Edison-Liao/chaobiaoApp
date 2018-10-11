@@ -18,7 +18,6 @@ mui.plusReady(function() {
 		reading = window.localStorage.getItem("reading"),
 		Qids = window.localStorage.getItem("Qids"),
 		Zhids = window.localStorage.getItem("Zhids"),
-		PrintText = window.localStorage.getItem("PrintText"),
 		readingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/MakeYongChaoBiao",
 		costingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GernarlPayMoney",
 		costList = {
@@ -40,7 +39,11 @@ mui.plusReady(function() {
 						xh: xh,
 						zids: zidsInput
 					},
+					beforeSend: function() {
+						plus.nativeUI.showWaiting("等待中");
+					},
 					success: function success(data) {
+						plus.nativeUI.closeWaiting();
 						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
 						mui.toast(data.DataMessage)
 						if (data.DataSuccess) {
@@ -59,7 +62,8 @@ mui.plusReady(function() {
 				});
 			},
 			/* 收费列表 */
-			costing: function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode) {
+			costing: function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode, PrintText) {
+
 				$.ajax({
 					url: api,
 					type: "Post",
@@ -72,14 +76,26 @@ mui.plusReady(function() {
 						userId: userID,
 						zuticode: zuticode
 					},
+					beforeSend: function() {
+						plus.nativeUI.showWaiting("等待中");
+					},
 					success: function success(data) {
-						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
-						window.localStorage.setItem("PrintText",data.ResultData)
+						plus.nativeUI.closeWaiting();
+						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
+							data1 = data.ResultDataTwo,
+							printData = [data1.rq, data1.UserName, data1.je,data1.bcje,data1.lateFee,data1.bcje,data1.bcje],
+							//测试打印
+							PrintText = data.ResultData;
+						window.localStorage.setItem("gouqiMXid", data1.gouqiId)
+
+						window.localStorage.setItem("printData", printData)
+						window.localStorage.setItem("PrintText", data.ResultData)
+						bleObj.gotoPrint(PrintText);
 						/* 	mui.toast(data.DataMessage)
 							if (data.DataSuccess) {
 								mui.openWindow(usersList)
 							} */
-						/* mui.openWindow(usersList) */
+						mui.openWindow(costList)
 
 					},
 					error: function error(data) {
@@ -92,14 +108,33 @@ mui.plusReady(function() {
 				});
 			}
 		};
+	/* 点击预收费，费用记录，立即抄表，立即收费，保存，确认收费记录不同的id */
+	if (arrears == "true") {
+		$(".pre-charge-btn").addClass("first-btn-active")
+		/* 预收费按钮 */
+		$("#content").on("tap", ".pre-charge-btn", function() {
+			mui.openWindow(costList)
+			window.localStorage.setItem("btn-index", "0")
+
+		})
+	} else {
+		$(".pre-charge-btn").removeClass("first-btn-active")
+	}
+	/* 费用记录按钮 */
+	$("#content").on("tap", ".cost-record-btn", function() {
+		mui.openWindow(costList)
+		window.localStorage.setItem("btn-index", "1")
+	})
 	/* 立即抄表按钮 */
 	$("#content").on("tap", ".reading-btn", function() {
+		window.localStorage.setItem("btn-index", "2")
 		$("#content").html(userInfo2)
 		$("#content").append(readList2)
 		var xh = $(".mui-table-view-cell").eq(0).attr("xh"),
 			yhCode = $(".yonghu-info-code").eq(0).attr("code");
 		/* 保存按钮 */
 		$("#content").on("tap", ".confirm-btn", function() {
+			window.localStorage.setItem("btn-index", "4")
 			var zidsInput = $(".reading-input").val();
 			info.reading(readingApi, yhCode, userID, zuticode, xh, zidsInput, costList)
 		})
@@ -108,6 +143,7 @@ mui.plusReady(function() {
 	})
 	/* 立即收费按钮 */
 	$("#content").on("tap", ".costing-btn", function() {
+		window.localStorage.setItem("btn-index", "3")
 		$("#content").html(userInfo2)
 		if (chargeList2 !== "undefined") {
 			$("#content").append(chargeList2)
@@ -126,7 +162,8 @@ mui.plusReady(function() {
 			};
 			/* 确认收费按钮 */
 			$("#content").on("tap", ".confirm-btn", function() {
-			
+				window.localStorage.setItem("btn-index", "5")
+				window.localStorage.removeItem("arrears")
 				var accountBalance = $(".account-balance").text().replace(/[^\-?\d.]/g, ''),
 					accountIndex = accountBalance.indexOf("-"),
 					costInput = Number($(".cost-input").val()),
@@ -137,10 +174,7 @@ mui.plusReady(function() {
 					ickaBh = $(".yonghu-info-number").eq(0).attr("ickaBh");
 				$(".result-number").text("本次余额：" + resultNumber);
 				info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
-				console.log(PrintText)
-
-				//测试打印
-				/* bleObj.gotoPrint(PrintText); */
+				mui.openWindow(costList)
 
 
 			})
@@ -195,8 +229,8 @@ mui.plusReady(function() {
 				};
 				/* 确认收费按钮 */
 				$("#content").on("tap", ".confirm-btn", function() {
-					console.log(typeof(PrintText))
 					window.localStorage.setItem("btn-index", "5")
+					window.localStorage.removeItem("arrears")
 					var accountBalance = $(".account-balance").text().replace(/[^\-?\d.]/g, ''),
 						accountIndex = accountBalance.indexOf("-"),
 						costInput = Number($(".cost-input").val()),
@@ -205,10 +239,7 @@ mui.plusReady(function() {
 						costInput,
 						ickaBh = $(".yonghu-info-number").eq(0).attr("ickaBh");
 					$(".result-number").text("本次余额：" + resultNumber);
-					console.log(PrintText)
 					info.costing(costingApi, ickaBh, $(".cost-input").val(), yingShoufeiID, userID, zuticode)
-					//测试打印
-					/* bleObj.gotoPrint(PrintText); */
 
 
 				})
@@ -233,20 +264,18 @@ mui.plusReady(function() {
 					"timeGouqimxid").split(",") :
 				window.localStorage.getItem("timeGouqimxid");
 			for (var i = 0; i < timeYhcode.length; i++) {
-				if (timeIsOffset[i] !== "true") {
+				if (!timeIsOffset[i]) {
 					$(".cost-list").append(
 						" \n            <li class=\"mui-table-view-cell cost-li-list\">\n            <p class=\"money-table-number\"><span class=\"mui-pull-left users-name\">\u6237\u53F7: " +
 						timeYhcode[i] + "</span><span class=\"users-number mui-pull-left\">\u91D1\u989D\uFF1A" + timeSshoutotalje[i] +
-						"\u5143</span><span class=\"mui-pull-left is-read is-read-false\")}>" + (timeIsOffset[i] == "true" ? "正常" :
-							"已作废") +
+						"\u5143</span><span class=\"mui-pull-left is-read is-read-false\")}>" + (timeIsOffset[i] ? "正常" : "已作废") +
 						"</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\"><span class=\"address\">\u6237\u540D\uFF1A" +
 						timeYhname[i] + "</span></p>\n        </li>")
 				} else {
 					$(".cost-list").append(
 						" \n            <li class=\"mui-table-view-cell cost-li-list\">\n            <p class=\"money-table-number\"><span class=\"mui-pull-left users-name\">\u6237\u53F7: " +
 						timeYhcode[i] + "</span><span class=\"users-number mui-pull-left\">\u91D1\u989D\uFF1A" + timeSshoutotalje[i] +
-						"\u5143</span><span class=\"mui-pull-left is-read is-read-true\")}>" + (timeIsOffset[i] == "true" ? "正常" :
-							"已作废") +
+						"\u5143</span><span class=\"mui-pull-left is-read is-read-true\")}>" + (!timeIsOffset[i] ? "已作废" : "正常") +
 						"</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\"><span class=\"address\">\u6237\u540D\uFF1A" +
 						timeYhname[i] + "</span></p>\n        </li>")
 				}
@@ -265,24 +294,7 @@ mui.plusReady(function() {
 			break;
 
 	}
-	/* 点击预收费，费用记录，立即抄表，立即收费，保存，确认收费记录不同的id */
-	if (!arrears) {
-		$(".pre-charge-btn").addClass("first-btn-active")
-		/* 预收费按钮 */
-		$("#content").on("tap", ".pre-charge-btn", function() {
-			mui.openWindow(costList)
-			window.localStorage.setItem("btn-index", "0")
 
-		})
-	} else {
-		$(".pre-charge-btn").removeClass("first-btn-active")
-	}
-	/* 费用记录按钮 */
-	$("#content").on("tap", ".cost-record-btn", function() {
-
-		mui.openWindow(costList)
-		window.localStorage.setItem("btn-index", "1")
-	})
 
 
 

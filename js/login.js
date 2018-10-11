@@ -20,7 +20,11 @@ mui.plusReady(function () {
 					userCode: userID,
 					userPass: userPass
 				},
-				success: function (data) {
+				beforeSend: function() {
+					plus.nativeUI.showWaiting("等待中");
+				},
+				success: function success(data) {
+					plus.nativeUI.closeWaiting();
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
 						userName = data.ResultData.UserName,
 						userId = data.ResultData.userId,
@@ -40,6 +44,7 @@ mui.plusReady(function () {
 				},
 				error: function (data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
+					plus.nativeUI.closeWaiting();
 					mui.alert(JSON.parse(data.responseText).Message);
 
 				},

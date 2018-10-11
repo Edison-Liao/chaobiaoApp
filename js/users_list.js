@@ -22,7 +22,11 @@ mui.plusReady(function() {
 				url: api,
 				type: "POST",
 				data: infoData,
-				success: function(data) {
+				beforeSend: function() {
+					plus.nativeUI.showWaiting("等待中");
+				},
+				success: function success(data) {
+					plus.nativeUI.closeWaiting();
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue).ResultData,
 						/* 欠费气量 */
 						bcql = 0,
@@ -111,29 +115,30 @@ mui.plusReady(function() {
 
 					}
 
+
+					/* 档案搜索详情欠费列表 */
+					var chargeList1 =
+						"<ul class=\"mui-table-view user-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
+						data.yonghuYingShouFei.length +
+						"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
+						bcql +
+						"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
+						qctotalje.toFixed(2) +
+						"</span>\n</li>\n<button type=\"button\" class=\"mui-btn-blue last-btn costing-btn\">\u7ACB\u5373\u6536\u8D39</button>\n</ul>";
+
+					/* 收费列表搜索收费详情 */
+					var chargeList2 =
+						"<ul class=\"mui-table-view user-info cost-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left\">\u6B20\u8D39\u671F\u6570\uFF1A" +
+						data.yonghuYingShouFei.length + "</span>\n<span class=\"mui-pull-right\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
+						bcql +
+						"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left totalje-text\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
+						totalje.toFixed(2) + "</span>\n<span class=\"mui-pull-right\">\u6EDE\u7EB3\u91D1\uFF1A" + lateFee.toFixed(2) +
+						"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left account-balance\">\n\u8D26\u6237\u4F59\u989D\uFF1A" +
+						data.yonghuInfo.bcye.toFixed(2) +
+						"\n</span>\n<span class=\"mui-pull-right\">\u672C\u6B21\u5E94\u6536\uFF1A" + qctotalje.toFixed(2) +
+						"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left result-number\">\u672C\u6B21\u4F59\u989D\uFF1A\n</span>\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u786E\u8BA4\u6536\u8D39\n</button>\n";
 					if (JSON.stringify(data.yonghuYingShouFei) !== "[]") {
-						/* 档案搜索详情欠费列表 */
-						var chargeList1 =
-							"<ul class=\"mui-table-view user-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u671F\u6570\uFF1A" +
-							data.yonghuYingShouFei.length +
-							"\n</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
-							bcql +
-							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
-							qctotalje.toFixed(2) +
-							"</span>\n</li>\n<button type=\"button\" class=\"mui-btn-blue last-btn costing-btn\">\u7ACB\u5373\u6536\u8D39</button>\n</ul>";
-
-						/* 收费列表搜索收费详情 */
-						var chargeList2 =
-							"<ul class=\"mui-table-view user-info cost-info\" arrears=\"true\">\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left\">\u6B20\u8D39\u671F\u6570\uFF1A" +
-							data.yonghuYingShouFei.length + "</span>\n<span class=\"mui-pull-right\">\u6B20\u8D39\u6C14\u91CF\uFF1A" +
-							bcql +
-							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left totalje-text\">\u6B20\u8D39\u91D1\u989D\uFF1A" +
-							totalje.toFixed(2) + "</span>\n<span class=\"mui-pull-right\">\u6EDE\u7EB3\u91D1\uFF1A" + lateFee.toFixed(2) +
-							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left account-balance\">\n\u8D26\u6237\u4F59\u989D\uFF1A" +
-							data.yonghuInfo.bcye.toFixed(2) +
-							"\n</span>\n<span class=\"mui-pull-right\">\u672C\u6B21\u5E94\u6536\uFF1A" + qctotalje.toFixed(2) +
-							"</span>\n</li>\n<li class=\"mui-table-view-cell\">\n<label class=\"reading-lable mui-pull-left\">\u6536\u5230\u91D1\u989D\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear cost-input mui-pull-left\" \nplaceholder=\"\u8BF7\u8F93\u5165\">\n</li>\n<li class=\"mui-table-view-cell\">\n<span class=\"mui-pull-left result-number\">\u672C\u6B21\u4F59\u989D\uFF1A\n</span>\n</li>\n</ul>\n<button type=\"button\" class=\"mui-btn mui-btn-blue mui-btn-block confirm-btn\">\n\u786E\u8BA4\u6536\u8D39\n</button>\n";
-
+						window.localStorage.setItem("arrears", "true")
 					}
 					/* 存储用户列表 */
 					window.localStorage.setItem("infoList1", infoList1)
@@ -149,10 +154,11 @@ mui.plusReady(function() {
 
 				},
 				error: function(data) {
-					//alert($.parseJSON(data.responseText).Message);
+					mui.alert("无用户信息");
+					plus.nativeUI.closeWaiting();
 					/*				var jsonData = JSON.stringify(data); // 转成JSON格式
 									var result = $.parseJSON(jsonData); // 转成JSON对象*/
-					console.log(data)
+
 				},
 				complete: function(data) { //after success or error
 				}
@@ -193,7 +199,10 @@ mui.plusReady(function() {
 			data = {
 				yonghuId: $this
 			};
-		usersInfo(usersinfoApi, data, userInfo)
+		/* usersInfo(usersinfoApi, data, userInfo) */
+		mui.openWindow({
+			url:"/pages/user_info/user_info.html"
+		})
 		window.localStorage.setItem("data-id", $this);
 	})
 });
