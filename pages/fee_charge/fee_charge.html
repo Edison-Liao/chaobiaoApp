@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>用户档案查询结果</title>
+		<title>费用收取</title>
 		<link rel="stylesheet" type="text/css" href="../../css/mui.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/font-awesome.min.css" />
 		<link rel="stylesheet" type="text/css" href="../../css/common.css" />
@@ -14,7 +14,7 @@
 		<!--页面标题-->
 		<header class="mui-bar mui-bar-nav header-title ">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">用户档案查询结果</h1>
+			<h1 class="mui-title">费用收取</h1>
 		</header>
 		<!--页面主体-->
 		<div class="mui-content" id="content">
@@ -45,7 +45,6 @@
 					<span>价格标准：</span><span class="yonghu-info-standard">
 					</span>
 				</li>
-				<button type="button" class="mui-btn-blue first-btn pre-charge-btn">预收费用</button>
 				<button type="button\" class="mui-btn-blue last-btn cost-record-btn">费用记录</button>
 			</ul>
 			<ul class="mui-table-view user-info reading-chaobiao">
@@ -68,23 +67,48 @@
 					<span>本次读数：</span>
 					<span class="yonghu-chaobiao-Zhids"></span>
 				</li>
-				<button type="button" class="mui-btn-blue last-btn reading-btn">立即抄表</button>
+				<li class="mui-table-view-cell">
+					<span>抄见气量：</span>
+					<span class="yonghu-chaobiao-Zhids"></span>
+				</li>
+				<button type="button" class="mui-btn-blue last-btn reading-btn">重新录入</button>
 			</ul>
-			<ul class="mui-table-view user-info" arrears="true">
-				<li class="mui-table-view-cell">
-					<span>欠费期数：</span>
-					<span class="yonghu-yingshoufei-length"></span>
+			<ul class="mui-table-view user-info cost-info" arrears="true">
+				<li class="mui-table-view-cell mui-pull-left">
+					<span class="mui-pull-left">欠费期数：</span>
+					<span class="mui-pull-left yonghu-yingshoufei-periods">3</span>
+				</li>
+				<li class="mui-table-view-cell mui-pull-right">
+					<span class="mui-pull-left">欠费气量：</span>
+					<span class="mui-pull-left yonghu-yingshoufei-bcql">50</span>
+				</li>
+				<li class="mui-table-view-cell mui-pull-left">
+					<span class="mui-pull-left totalje-text">欠费金额：</span>
+					<span class="yonghu-yingshoufei-totalje">100.00</span>
+				</li>
+				<li class="mui-table-view-cell mui-pull-right">
+					<span class="mui-pull-left">滞纳金：</span>
+					<span class="yonghu-yingshoufei-lateFee">100.00</span>
+				</li>
+				<li class="mui-table-view-cell mui-pull-left">
+					<span class="mui-pull-left account-balance">账户余额：</span>
+					<span class="yonghu-yingshoufei-bcye">100.00</span>
+				</li>
+				<li class="mui-table-view-cell mui-pull-right">
+					<span class="mui-pull-left">本次应收：</span>
+					<span class="yonghu-yingshoufei-qctotalje">100.00</span>
+				</li>
+			<!-- 	<li class="mui-table-view-cell">
+					<label class="reading-lable">收到金额</label>
+					<input type="number" class="mui-input-clear cost-input" placeholder="请输入">
 				</li>
 				<li class="mui-table-view-cell">
-					<span>欠费气量：</span>
-					<span class="yonghu-yingshoufei-bcql">bcql</span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span>欠费金额：</span>
-					<span class="yonghu-yingshoufei-qctotalje"></span>
-				</li>
-				<button type="button" class="mui-btn-blue last-btn costing-btn">立即收费</button>
+					<span class="result-number">本次余额</span>
+					<span class="yonghu-yingshoufei-this-balance">100.00</span>
+				</li> -->
 			</ul>
+			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">确认收费</button>
+
 		</div>
 		<!--底部导航-->
 		<footer class="mui-bar mui-bar-footer footer-nav">
