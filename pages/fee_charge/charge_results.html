@@ -19,8 +19,8 @@
 		<!--页面主体-->
 		<div class="mui-content" id="content">
 			<ul class="mui-table-view user-info">
-				<li class="mui-table-view-cell" xh="data.yonghuInfo.xh">
-					<span code="data.yonghuInfo.yhcode">用户编号：</span><span class="yonghu-info-code"></span>
+				<li class="mui-table-view-cell">
+					<span>用户编号：</span><span class="yonghu-info-code"></span>
 				</li>
 				<li class="mui-table-view-cell">
 					<span>用户姓名：</span><span class="yonghu-info-name"></span>
@@ -45,46 +45,35 @@
 					<span>价格标准：</span><span class="yonghu-info-standard">
 					</span>
 				</li>
-				<button type="button" class="mui-btn-blue first-btn pre-charge-btn">预收费用</button>
-				<button type="button\" class="mui-btn-blue last-btn cost-record-btn">费用记录</button>
+				<button type="button" class="mui-btn-blue last-btn file-details-btn">档案详情</button>
 			</ul>
-			<ul class="mui-table-view user-info reading-chaobiao">
+			<ul class="mui-table-view user-info">
 				<li class="mui-table-view-cell">
-					<span>当前账期：</span>
-					<span class="yonghu-chaobiao-year"></span>
-					<span>年</span>
-					<span class="yonghu-chaobiao-period"></span>
-					<span>月账期</span>
+					<span>收费时间：</span>
+					<span class="yingshoufei-xiaopiao-rq"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span>抄表状态：</span>
-					<span class="yonghu-chaobiao-ischaobiao"></span>
+					<span>操作员：</span>
+					<span class="yingshoufei-xiaopiao-username"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span>上次读数：</span>
-					<span class="yonghu-chaobiao-Qids"></span>
+					<span>账户余额：</span>
+					<span class="yingshoufei-xiaopiao-bcje"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span>本次读数：</span>
-					<span class="yonghu-chaobiao-Zhids"></span>
+					<span>实收金额：</span>
+					<span class="yingshoufei-xiaopiao-je"></span>
 				</li>
-				<button type="button" class="mui-btn-blue last-btn reading-btn">立即抄表</button>
+				<li class="mui-table-view-cell">
+					<span>滞纳金：</span>
+					<span class="yingshoufei-xiaopiao-latefee"></span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>本次余额：</span>
+					<span class="yingshoufei-xiaopiao-zhje"></span>
+				</li>
 			</ul>
-			<ul class="mui-table-view user-info" arrears="true">
-				<li class="mui-table-view-cell">
-					<span>欠费期数：</span>
-					<span class="yonghu-yingshoufei-length"></span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span>欠费气量：</span>
-					<span class="yonghu-yingshoufei-bcql">bcql</span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span>欠费金额：</span>
-					<span class="yonghu-yingshoufei-qctotalje"></span>
-				</li>
-				<button type="button" class="mui-btn-blue last-btn costing-btn">立即收费</button>
-			</ul>
+			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">重打小票</button>
 		</div>
 		<!--底部导航-->
 		<footer class="mui-bar mui-bar-footer footer-nav">
@@ -95,8 +84,69 @@
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/printer.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/users_list.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/test.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			mui.init();
+			mui.plusReady(function() {
+
+				var savedBleId = localStorage.getItem("bleId"),
+					gouqiMXid = localStorage.getItem("gouqiMXid"),
+					gouqiMXapi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuOneGouqiMx",
+					printData = window.localStorage.getItem("printData").split(",");
+					console.log(printData)
+					$(".yingshoufei-xiaopiao-rq").text(printData[0])
+					$(".yingshoufei-xiaopiao-username").text(printData[1])
+					$(".yingshoufei-xiaopiao-bcje").text(printData[2]+".00")
+					$(".yingshoufei-xiaopiao-je").text(printData[3]+".00")
+					$(".yingshoufei-xiaopiao-latefee").text(printData[4]+".00")
+					$(".yingshoufei-xiaopiao-zhje").text(printData[5]+".00")
+				if (savedBleId) {
+					var bleObj = new ConnectPrinter(savedBleId);
+				} else {
+					plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
+						if (e.index === 0) {
+							mui.openWindow({
+								id: "/pages/printer.html",
+								url: "/pages/printer.html"
+							});
+						}
+					});
+				}
+				replayTicket = function(api, gouqiMXid) {
+					$.ajax({
+						url: api,
+						type: "Post",
+						data: {
+							gouqimxId: gouqiMXid
+						},
+						beforeSend: function() {
+							plus.nativeUI.showWaiting("等待中");
+						},
+						success: function success(data) {
+							plus.nativeUI.closeWaiting();
+							var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
+							console.log(JSON.stringify(data))
+
+						},
+						error: function error(data) {
+							//200的响应也有可能被认定为error，responseText中没有Message部分
+							//mui.alert(JSON.parse(data.responseText).Message);
+							mui.alert("获取数据失败，请返回上级页面")
+							plus.nativeUI.closeWaiting();
+						},
+						complete: function complete(data) {
+							//after success or error
+						}
+					});
+				};
+				replayTicket(gouqiMXapi, gouqiMXid)
+				$("#content").on("tap", ".re-charge-btn", function() {
+
+				})
+			})
+		</script>
 	</body>
 
 </html>

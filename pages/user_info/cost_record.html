@@ -110,7 +110,9 @@
 							},
 							error: function error(data) {
 								//200的响应也有可能被认定为error，responseText中没有Message部分
-								mui.alert(JSON.parse(data.responseText).Message);
+								//mui.alert(JSON.parse(data.responseText).Message);
+								mui.alert("获取数据失败，请返回上级页面")
+								plus.nativeUI.closeWaiting();
 							},
 							complete: function complete(data) {
 								//after success or error

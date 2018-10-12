@@ -1,7 +1,12 @@
 mui.init();
 mui.plusReady(function() {
+	//获取对应用户id
 	var dataId = window.localStorage.getItem("data-id"),
+		//获取用户想起api
 		userInfoApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuInfo",
+		// 未欠费添加状态
+		arrears = window.localStorage.getItem("arrears") == "false",
+		//获取用户详情方法
 		userInfo = function(api, dataId) {
 			$.ajax({
 				url: api,
@@ -26,6 +31,7 @@ mui.plusReady(function() {
 					$(".yonghu-info-state").text(data.yonghuInfo.ztbz == 1 ? "正常" : data.yonghuInfo.ztbz == 2 ? "停用" : "未启用")
 					$(".yonghu-info-number").text(data.yonghuInfo.ickaBH)
 					$(".yonghu-info-standard").text(data.yonghuInfo.JGName)
+					$(".yonghu-info-code").attr("xh", data.yonghuInfo.xh)
 					/* 立即抄表列表 */
 					if (data.yonghuChaobiao !== null) {
 						$(".reading-chaobiao").removeClass("search-btn-none")
@@ -40,25 +46,44 @@ mui.plusReady(function() {
 					}
 					/* 立即收费 */
 					if (data.yonghuYingShouFei !== "") {
+
+						var bcql = 0, //欠费气量													
+							totalje = 0, //应收金额和欠费金额						
+							lateFee = 0, //滞纳金
+							yingshoufeiID = []; //应收费id
 						for (var i = 0; i < data.yonghuYingShouFei.length; i++) {
-							yingshoufeiID.push(data.yonghuYingShouFei[i].yshoufeiid)
-							bcql += parseFloat(data.yonghuYingShouFei[i].bcql);
-							qctotalje += parseFloat((data.yonghuYingShouFei[i].qctotalje).toFixed(2));
-							totalje += parseFloat((data.yonghuYingShouFei[i].totalje).toFixed(2));
-							lateFee += parseFloat((data.yonghuYingShouFei[i].lateFee).toFixed(2));
+							yingshoufeiID.push(data.yonghuYingShouFei[i].yshoufeiid) //应收费id
+							bcql += parseFloat(data.yonghuYingShouFei[i].bcql); //欠费气量相加
+							totalje += parseFloat((data.yonghuYingShouFei[i].totalje).toFixed(2)); //应收金额和欠费金额相加	
+							lateFee += parseFloat((data.yonghuYingShouFei[i].lateFee).toFixed(2)); //滞纳金相加
 						}
 
-						$(".yonghu-yingshoufei-length").text(data.yonghuYingShouFei.length)
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-length").text(data.yonghuYingShouFei.length) : $(
+							".yonghu-yingshoufei-length").text(data.yonghuYingShouFei.length + "　　") //欠费期数
 						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-bcql").text(0) : $(".yonghu-yingshoufei-bcql")
-							.text(bcql)
-						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-qctotalje").text(0) : $(
-							".yonghu-yingshoufei-qctotalje").text(qctotalje.toFixed(2))
-							window.localStorage.setItem("arrears","false")
+							.text(bcql) //欠费气量
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-totalje").text(0) : $(
+							".yonghu-yingshoufei-totalje").text(totalje.toFixed(2)) //应收金额和欠费金额
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-lateFee").text(0) : $(
+							".yonghu-yingshoufei-lateFee").text(lateFee.toFixed(2)) //滞纳金
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-bcye").text(0) : $(
+							".yonghu-yingshoufei-bcye").text(data.yonghuInfo.bcye.toFixed(2)) //账户余额
+						$(".cost-input").val() //收到金额
+						$(".yonghu-yingshoufei-this-balance").text() //本次余额
+						if (totalje == 0) {
+							$(".user-info-list").attr("arrears", "false")
+							$(".pre-charge-btn").removeClass("first-btn-active") //添加是否欠费属性
+						} else {
+							$(".user-info-list").attr("arrears", "true") //添加是否欠费属性
+							$(".pre-charge-btn").addClass("first-btn-active")
+						}
 					}
 				},
 				error: function error(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
-					mui.alert(JSON.parse(data.responseText).Message);
+					//mui.alert(JSON.parse(data.responseText).Message);
+					mui.alert("获取数据失败，请返回上级页面")
+					plus.nativeUI.closeWaiting();
 				},
 				complete: function complete(data) {
 					//after success or error
@@ -66,21 +91,45 @@ mui.plusReady(function() {
 
 			});
 		}
+	// 调用用户详情页面方法
 	userInfo(userInfoApi, dataId)
+	// 点击立即抄表跳转抄表页面
+	$("#content").on("tap", ".reading-btn", function() {
+		mui.openWindow({
+			url: "/pages/meter_reading/meter_reading.html",
+			id: "meter_reading"
+		})
+	})
+	// 点击立即收费跳转收费页面
+	$("#content").on("tap", ".costing-btn", function() {
+		mui.openWindow({
+			url: "/pages/fee_charge/fee_charge.html",
+			id: "fee_charge"
+		})
+	})
+	// 点击费用记录跳转页面
 	$("#content").on("tap", ".cost-record-btn", function() {
 		mui.openWindow({
-			url: "/pages/cost_record.html",
+			url: "/pages/user_info/cost_record.html",
 			id: "cost_record.html"
 		})
 	})
-/* 	console.log(typeof(window.localStorage.getItem("arrears"))) */
-	if(window.localStorage.getItem("arrears")=="false"){
-		$("#content").on("tap", ".pre-charge-btn", function() {
+
+	// 点击预收费按钮跳转首页页面
+	$("#content").on("tap", ".pre-charge-btn", function() {
+		if ($(".user-info-list").attr("arrears") == "false") {
 			mui.openWindow({
-				url: "/pages/cost_record.html",
-				id: "cost_record.html"
+				url: "/pages/fee_charge/fee_charge.html",
+				id: "fee_charge"
 			})
-		})
-	}
-	
+		}
+	})
+	//点击跳转档案详情页面
+$("#content").on("tap",".file-details-btn",function(){
+	mui.openWindow({
+		url: "/pages/user_info/user_info.html",
+		id: "user_info"
+	})
+})
+
 })

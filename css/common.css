@@ -348,13 +348,14 @@
 	position: absolute;
 	top: 5%;
 	right: 5%;
-	background-color: #c7c7c7;
-	border: 1px solid #e6e6e6;
+	border: 1px solid #007aff;
+	background-color: #007aff;
 }
 
 .first-btn-active {
-	border: 1px solid #007aff;
-	background-color: #007aff;
+	background-color: #c7c7c7;
+	border: 1px solid #e6e6e6;
+
 }
 
 .last-btn {
@@ -367,11 +368,12 @@
 	width: 60% !important;
 	height: 30px !important;
 	font-size: 14px !important;
+	
 	vertical-align: middle;
 }
 
 .reading-lable {
-	vertical-align: middle;
+	vertical-align: super;
 	margin-top: 5px;
 
 }
@@ -397,7 +399,19 @@
 	font-size: 16px;
 	border-radius: 5px;
 }
-
+.save-btn {
+	width: 80%;
+	height: 41px;
+	margin-top: 20px;
+	margin-left: 10%;
+	text-align: center;
+	padding: 0;
+	font-size: 16px;
+	border-radius: 5px;
+}
+.text-left{
+	    padding-right: 10%;
+}
 /* 费用详情 */
 .mui-table-view-cell>.cost-record {
 	display: inline-block;

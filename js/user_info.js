@@ -2,12 +2,6 @@ mui.init();
 mui.plusReady(function() {
 	var infoId = window.localStorage.getItem("data-id"),
 		herfIndex = window.localStorage.getItem("herfIndex"),
-		userInfo1 = window.localStorage.getItem("infoList1"),
-		readList1 = window.localStorage.getItem("readList1"),
-		chargeList1 = window.localStorage.getItem("chargeList1"),
-		userInfo2 = window.localStorage.getItem("infoList2"),
-		readList2 = window.localStorage.getItem("readList2"),
-		chargeList2 = window.localStorage.getItem("chargeList2"),
 		dataTime = window.localStorage.getItem("dataTime"),
 		endTime = window.localStorage.getItem("endTime"),
 		userName = window.localStorage.getItem("userName"),

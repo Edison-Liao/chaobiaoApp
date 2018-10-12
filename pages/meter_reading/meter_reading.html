@@ -18,9 +18,9 @@
 		</header>
 		<!--页面主体-->
 		<div class="mui-content" id="content">
-			<ul class="mui-table-view user-info">
-				<li class="mui-table-view-cell" xh="data.yonghuInfo.xh">
-					<span code="data.yonghuInfo.yhcode">用户编号：</span><span class="yonghu-info-code"></span>
+			<ul class="mui-table-view user-info user-info-list">
+				<li class="mui-table-view-cell">
+					<span>用户编号：</span><span class="yonghu-info-code"></span>
 				</li>
 				<li class="mui-table-view-cell">
 					<span>用户姓名：</span><span class="yonghu-info-name"></span>
@@ -46,8 +46,7 @@
 					</span>
 				</li>
 			</ul>
-			<ul class="mui-table-view user-info reading-true" reading="true">
-				<li class="mui-table-view-cell">
+			<ul class="mui-table-view user-info">
 				<li class="mui-table-view-cell">
 					<span>当前账期：</span>
 					<span class="yonghu-chaobiao-year"></span>
@@ -68,7 +67,7 @@
 					<input type="number" class="mui-input-clear reading-input mui-pull-left" placeholder="请输入">
 				</li>
 			</ul>
-			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">保存</button>
+			<button type="button" class="mui-btn mui-btn-blue mui-btn-block save-btn">保存</button>
 
 		</div>
 		<!--底部导航-->
@@ -80,8 +79,10 @@
 		<script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/login.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/users_list.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/test.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/meter_reading.js" type="text/javascript" charset="utf-8"></script>
 	</body>
 
 </html>

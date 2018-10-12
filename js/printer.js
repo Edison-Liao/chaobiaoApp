@@ -221,13 +221,17 @@ var SearchBluetooth = function() {
 		plus.nativeUI.closeWaiting();
 		mui.toast('打印机已就绪，可正常打印！');
 
-		this.gotoPrint = function(byteStr) {
-			var outputStream = bluetoothSocket.getOutputStream();
-			plus.android.importClass(outputStream);
-			var bytes = plus.android.invoke(byteStr, 'getBytes', 'gbk');
-			outputStream.write(bytes);
-			outputStream.flush();
-			device = null;
-		};
+		if (bluetoothSocket.isConnected()) {
+			this.gotoPrint = function(byteStr) {
+				var outputStream = bluetoothSocket.getOutputStream();
+				plus.android.importClass(outputStream);
+				console.log(byteStr)
+				var bytes = plus.android.invoke(byteStr, 'getBytes', 'gbk');
+				outputStream.write(bytes);
+				outputStream.flush();
+				device = null;
+				bluetoothSocket.close();
+			};
+		}
 	};
 })(window);
