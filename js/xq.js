@@ -22,6 +22,7 @@
 						type: "POST",
 						dataType: "xml",
 						data: "",
+						timeout:5000,
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
@@ -57,7 +58,7 @@
 						data: {
 							userId: dataID
 						},
-						timeout: 10000, //超时时间设置为10秒；
+						timeout: 5000, //超时时间设置为10秒；
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
@@ -93,6 +94,7 @@
 						data: {
 							zbId: dataID
 						},
+						timeout:5000,
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},

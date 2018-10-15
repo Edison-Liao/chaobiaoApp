@@ -53,37 +53,38 @@ mui.plusReady(function() {
 			})
 			break;
 		case "1":
-			{
-				$('.users-list').on("tap", ".mui-table-view-cell", function() {
-					var $this = $(this).attr("data-id");
-					mui.openWindow({
-						url: "/pages/meter_reading/meter_reading.html"
-					})
-					window.localStorage.setItem("data-id", $this);
+
+			$('.users-list').on("tap", ".mui-table-view-cell", function() {
+				var $this = $(this).attr("data-id");
+				mui.openWindow({
+					url: "/pages/meter_reading/meter_reading.html"
 				})
-			};
+				window.localStorage.setItem("data-id", $this);
+			})
+
 			break;
 		case "2":
-			{
-				$('.users-list').on("tap", ".mui-table-view-cell", function() {
-					var $this = $(this).attr("data-id");
-					mui.openWindow({
-						url: "/pages/fee_charge/fee_charge.html"
-					})
-					window.localStorage.setItem("data-id", $this);
+
+			$('.users-list').on("tap", ".mui-table-view-cell", function() {
+				var $this = $(this).attr("data-id");
+				mui.openWindow({
+					url: "/pages/fee_charge/fee_charge.html"
 				})
-			};
+				window.localStorage.setItem("data-id", $this);
+			})
+
 			break;
-			/* 		case "3":
-						{
-							$('.users-list').on("tap", ".mui-table-view-cell", function() {
-								var $this = $(this).attr("data-id");
-								mui.openWindow({
-									url: "/pages/fee_charge/fee_charge.html"
-								})
-								window.localStorage.setItem("data-id", $this);
-							})
-						};
-						break; */
+		case "3":
+
+			$('.cost-list').on("tap", ".cost-li-list", function() {
+				var $this = $(this).attr("data-id");
+				/* 	console.log($('.cost-list').html()) */
+				mui.openWindow({
+					url: "/pages/fee_charge/charge_results.html"
+				})
+				window.localStorage.setItem("data-id", $this);
+			})
+
+			break;
 	}
 });

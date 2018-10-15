@@ -9,11 +9,13 @@ mui.plusReady(function() {
 		},
 		loginHtml = {
 			url: "/pages/login.html",
-			id: "login.html"
+			id: "login.html",
+			createNew: true
 		},
 		searchHtml = {
 			url: "/pages/search.html",
-			id: "search.html"
+			id: "search.html",
+			createNew: true
 		}
 	herfIndex = "herfIndex",
 		titleNode = "首页",
@@ -47,6 +49,7 @@ mui.plusReady(function() {
 					mui.alert(mes)
 				} else {
 					mui.openWindow(openInfo)
+					window.localStorage.setItem("herfIndex", "")
 				}
 			},
 			/*退出功能
@@ -54,7 +57,7 @@ mui.plusReady(function() {
 			 * mes:string(提示)
 			 * */
 			goOut: function(number, mes) {
-				if (number > 1) {
+				if (number >= 1) {
 					plus.runtime.quit();
 				} else {
 					mui.toast(mes);
@@ -75,13 +78,20 @@ mui.plusReady(function() {
 				window.localStorage.setItem(herfIndex, index)
 			},
 
-		}
+		};
+	/* 自动轮播图 */
+	swipeBack: true //启用右滑关闭功能【一旦取值为false，左右触控滑动将会失效！】
+	var slider = mui("#slider");
+	slider.slider({
+		interval: 3000
+	});
 	/* 调用是否登陆功能 */
 	reading_method.judge(userName, adminName, loginHtml)
 	/*调用返回首页功能*/
 	mui(".footer-nav").on("tap", "#go-home", function() {
 		var title = $(".header-title>h1");
 		reading_method.goHome(title, titleNode, homeMes, indexHtml)
+		console.log(window.localStorage.getItem("herfIndex"))
 	})
 	/*调用退出功能*/
 	mui(".footer-nav").on("tap", "#go-out", function() {

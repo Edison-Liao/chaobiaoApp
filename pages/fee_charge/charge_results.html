@@ -39,7 +39,7 @@
 					<span class="yonghu-info-state"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span ickaBH="data.yonghuInfo.ickaBH">气表编号：</span><span class="yonghu-info-number"></span>
+					<span>气表编号：</span><span class="yonghu-info-number"></span>
 				</li>
 				<li class="mui-table-view-cell">
 					<span>价格标准：</span><span class="yonghu-info-standard">
@@ -53,19 +53,19 @@
 					<span class="yingshoufei-xiaopiao-rq"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span>操作员：</span>
+					<span>　操作员：</span>
 					<span class="yingshoufei-xiaopiao-username"></span>
 				</li>
 				<li class="mui-table-view-cell">
 					<span>账户余额：</span>
-					<span class="yingshoufei-xiaopiao-bcje"></span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span>实收金额：</span>
 					<span class="yingshoufei-xiaopiao-je"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span>滞纳金：</span>
+					<span>实收金额：</span>
+					<span class="yingshoufei-xiaopiao-bcje"></span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>　滞纳金：</span>
 					<span class="yingshoufei-xiaopiao-latefee"></span>
 				</li>
 				<li class="mui-table-view-cell">
@@ -73,7 +73,7 @@
 					<span class="yingshoufei-xiaopiao-zhje"></span>
 				</li>
 			</ul>
-			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">重打小票</button>
+			<button type="button" class="mui-btn mui-btn-blue mui-btn-block re-charge-btn">重打小票</button>
 		</div>
 		<!--底部导航-->
 		<footer class="mui-bar mui-bar-footer footer-nav">
@@ -90,22 +90,16 @@
 		<script>
 			mui.init();
 			mui.plusReady(function() {
-
 				var savedBleId = localStorage.getItem("bleId"),
 					gouqiMXid = localStorage.getItem("gouqiMXid"),
 					gouqiMXapi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuOneGouqiMx",
-					printData = window.localStorage.getItem("printData").split(",");
-					console.log(printData)
-					$(".yingshoufei-xiaopiao-rq").text(printData[0])
-					$(".yingshoufei-xiaopiao-username").text(printData[1])
-					$(".yingshoufei-xiaopiao-bcje").text(printData[2]+".00")
-					$(".yingshoufei-xiaopiao-je").text(printData[3]+".00")
-					$(".yingshoufei-xiaopiao-latefee").text(printData[4]+".00")
-					$(".yingshoufei-xiaopiao-zhje").text(printData[5]+".00")
+					/* 		printData = window.localStorage.getItem("printData").split(","), */
+					PrintText1 = window.localStorage.getItem("PrintText1"),
+					userName = window.localStorage.getItem("userName");
 				if (savedBleId) {
 					var bleObj = new ConnectPrinter(savedBleId);
 				} else {
-					plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
+					plus.nativeUI.confirm('打印机未设置，是否前往设置？', function(e) {
 						if (e.index === 0) {
 							mui.openWindow({
 								id: "/pages/printer.html",
@@ -121,13 +115,19 @@
 						data: {
 							gouqimxId: gouqiMXid
 						},
+						timeout: 5000,
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
 						success: function success(data) {
 							plus.nativeUI.closeWaiting();
-							var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
-							console.log(JSON.stringify(data))
+							var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue).ResultData;
+							$(".yingshoufei-xiaopiao-rq").text(data.rq)
+							$(".yingshoufei-xiaopiao-username").text(userName)
+							$(".yingshoufei-xiaopiao-je").text(data.yhYE.toFixed(2))
+							$(".yingshoufei-xiaopiao-bcje").text(data.sshoutotalje.toFixed(2))
+							$(".yingshoufei-xiaopiao-latefee").text(data.Surcharge.toFixed(2))
+							$(".yingshoufei-xiaopiao-zhje").text((data.yhYE + data.sshoutotalje - data.Surcharge).toFixed(2))
 
 						},
 						error: function error(data) {
@@ -139,11 +139,13 @@
 						complete: function complete(data) {
 							//after success or error
 						}
-					});
+					})
 				};
+
 				replayTicket(gouqiMXapi, gouqiMXid)
 				$("#content").on("tap", ".re-charge-btn", function() {
-
+					bleObj.gotoPrint("\r\n\r\n" + PrintText1 + "\r\n\r\n\r\n\r\n");
+					bleObj = new ConnectPrinter(savedBleId);
 				})
 			})
 		</script>

@@ -282,8 +282,15 @@
 }
 
 .mui-table-view-cell>.name-table-number {
-	font-size: 16px;
+	font-size: 14px;
 	color: #000000;
+}
+
+.users-name {
+	max-width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .mui-table-view-cell>.money-table-number {
@@ -294,6 +301,10 @@
 .mui-table-view-cell>.users-address {
 	margin-top: 14px;
 	font-size: 12px;
+	max-width: 300px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .mui-table-view-cell .users-number {
@@ -320,7 +331,8 @@
 	margin-top: 0 !important;
 	color: #007BE6 !important;
 }
-.search-btn-none{
+
+.search-btn-none {
 	display: none;
 }
 
@@ -368,8 +380,9 @@
 	width: 60% !important;
 	height: 30px !important;
 	font-size: 14px !important;
-	
-	vertical-align: middle;
+	margin: 0 !important;
+	padding: 0 !important;
+	vertical-align: super;
 }
 
 .reading-lable {
@@ -385,8 +398,11 @@
 .cost-input {
 	width: 70% !important;
 	height: 30px !important;
+	margin: 0 !important;
+	padding: 0 !important;
 	font-size: 14px !important;
-	vertical-align: middle;
+	vertical-align: super;
+
 }
 
 .confirm-btn {
@@ -398,7 +414,9 @@
 	padding: 0;
 	font-size: 16px;
 	border-radius: 5px;
+	margin-bottom: 100px;
 }
+
 .save-btn {
 	width: 80%;
 	height: 41px;
@@ -409,9 +427,22 @@
 	font-size: 16px;
 	border-radius: 5px;
 }
-.text-left{
-	    padding-right: 10%;
+
+.re-charge-btn {
+	width: 80%;
+	height: 41px;
+	margin-top: 20px;
+	margin-left: 10%;
+	text-align: center;
+	padding: 0;
+	font-size: 16px;
+	border-radius: 5px;
 }
+
+.text-left {
+	padding-right: 10%;
+}
+
 /* 费用详情 */
 .mui-table-view-cell>.cost-record {
 	display: inline-block;

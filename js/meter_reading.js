@@ -10,7 +10,7 @@ mui.plusReady(function() {
 
 
 		/* 抄表返回 */
-		reading = function(api, yhcode, userID, zutiCode, xh, zidsInput,entryDetails) {
+		reading = function(api, yhcode, userID, zutiCode, xh, zidsInput, entryDetails) {
 			$.ajax({
 				url: api,
 				type: "Post",
@@ -21,6 +21,7 @@ mui.plusReady(function() {
 					xh: xh,
 					zids: zidsInput
 				},
+				timeout: 5000,
 				beforeSend: function() {
 					plus.nativeUI.showWaiting("等待中");
 				},
@@ -32,7 +33,7 @@ mui.plusReady(function() {
 						mui.openWindow(entryDetails)
 					}
 					/* mui.openWindow(entryDetails) */
-
+					$(".reading-input").trigger("click").focus()
 				},
 				error: function error(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
@@ -50,7 +51,8 @@ mui.plusReady(function() {
 		var yhcode = $(".yonghu-info-code").text(),
 			zidsInput = $(".reading-input").val(),
 			xh = $(".yonghu-info-code").attr("xh");
-		reading(readingApi, yhcode, userID, zuticode, xh, zidsInput,entryDetails)
+		reading(readingApi, yhcode, userID, zuticode, xh, zidsInput, entryDetails)
 	})
+
 
 })

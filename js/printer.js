@@ -203,7 +203,7 @@ var SearchBluetooth = function() {
 //连接打印机和打印
 (function(window) {
 	window.ConnectPrinter = function(bleId) {
-		plus.nativeUI.showWaiting("打印机就绪中")
+		plus.nativeUI.showWaiting("正在连接打印机")
 		var plusMain = plus.android.runtimeMainActivity(),
 			BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter"),
 			UUID = plus.android.importClass("java.util.UUID"),
@@ -216,7 +216,10 @@ var SearchBluetooth = function() {
 		var bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
 		plus.android.importClass(bluetoothSocket);
 		if (!bluetoothSocket.isConnected()) {
+			
 			bluetoothSocket.connect();
+		}else{
+			mui.toast('打印机异常，请检查');
 		}
 		plus.nativeUI.closeWaiting();
 		mui.toast('打印机已就绪，可正常打印！');
@@ -231,7 +234,9 @@ var SearchBluetooth = function() {
 				outputStream.flush();
 				device = null;
 				bluetoothSocket.close();
+				// BluetoothDevice.connectGatt()
 			};
 		}
+		
 	};
 })(window);

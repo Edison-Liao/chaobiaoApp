@@ -18,13 +18,13 @@ mui.plusReady(function() {
 		newDate +
 		" >\n</div>\n<div class=\"mui-input-row selection-conditions end-time\">            \n<label>\u7ED3\u675F\u65F6\u95F4\uFF1A</label>\n<input type=\"text\" class=\"mui-input-clear\" placeholder=\"\u8BF7\u8F93\u5165\" value=" +
 		newDate +
-		">\n</div>\n<div class=\"mui-input-row selection-conditions\">            \n<label>\u64CD\u4F5C\u5458</label>            \n<input type=\"text\" class=\"mui-input-clear admin-name\" readonly=\"readonly\" value=" +
+		">\n</div>\n<div class=\"mui-input-row selection-conditions\">            \n<label>　\u64CD\u4F5C\u5458：</label>            \n<input type=\"text\" class=\"mui-input-clear admin-name\" readonly=\"readonly\" value=" +
 		userName + ">\n</div>\n</form>",
 		meContent =
-		"<ul class=\"mui-table-view user-info\">\n    <li class=\"mui-table-view-cell\"><span class=\"\">\u767B\u9646\u8D26\u53F7\uFF1A" +
-		userID +
+		"<ul class=\"mui-table-view user-info\">\n    <li class=\"mui-table-view-cell\"><span class=\"\">　\u767B\u9646\u8D26\u53F7\uFF1A" +
+		+userID +
 		"</span></li>\n    <li class=\"mui-table-view-cell\"><span class=\"\">\u64CD\u4F5C\u5458\u59D3\u540D\uFF1A" +
-		userName + "</span></li>\n    <li class=\"mui-table-view-cell\"><span class=\"\">\u6240\u5C5E\u90E8\u95E8\uFF1A" +
+		userName + "</span></li>\n    <li class=\"mui-table-view-cell\"><span class=\"\">　\u6240\u5C5E\u90E8\u95E8\uFF1A" +
 		UserDepart + "</span></li>\n     </ul>",
 		contentArr = [fileContent, readingContent, chargeContent, dailyContent, meContent],
 		usersList = {
@@ -47,6 +47,7 @@ mui.plusReady(function() {
 				var herfIndex = window.localStorage.getItem(herf);
 				titleEle.text(titleArr[herfIndex]);
 				contentEle.prepend(contentArr[herfIndex]);
+				$(".search-btn").removeClass("search-btn-none")
 				if (herfIndex == "4") {
 					$(".search-btn").addClass("search-btn-none")
 				}
@@ -64,6 +65,7 @@ mui.plusReady(function() {
 					beforeSend: function() {
 						plus.nativeUI.showWaiting("等待中");
 					},
+					timeout: 5000,
 					success: function success(data) {
 						plus.nativeUI.closeWaiting();
 						var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
@@ -72,13 +74,13 @@ mui.plusReady(function() {
 							yonhuID = [],
 							yhcode = [],
 							AddressMS = [],
-							isChaoBiao=[];
+							isChaoBiao = [];
 						for (var x in data.ResultData) {
 							yhname.push(data.ResultData[x].yhname)
 							yonhuID.push(data.ResultData[x].yonhuID)
 							yhcode.push(data.ResultData[x].yhcode)
 							AddressMS.push((data.ResultData[x].AddressMS == undefined ? data.ResultData[x].adr : data.ResultData[x].AddressMS))
-							isChaoBiao.push(data.ResultData[x].Qids==data.ResultData[x].Zhids)
+							isChaoBiao.push(data.ResultData[x].Qids == data.ResultData[x].Zhids)
 							/* console.log(data.ResultData[x].Qids==data.ResultData[x].Zhids) */
 						}
 						window.localStorage.setItem("yhname", yhname)
@@ -87,13 +89,15 @@ mui.plusReady(function() {
 						window.localStorage.setItem("AddressMS", AddressMS)
 						dataTwo == null ? window.localStorage.setItem("dataTwo", dataTwo) : window.localStorage.setItem("dataTwo",
 							dataTwo.isRead)
-						 window.localStorage.setItem("isChaoBiao", isChaoBiao)
+						window.localStorage.setItem("isChaoBiao", isChaoBiao)
 						mui.openWindow(usersList)
-
+					
 					},
 					error: function error(data) {
 						//200的响应也有可能被认定为error，responseText中没有Message部分
-						mui.alert(JSON.parse(data.responseText).Message);
+						//mui.alert(JSON.parse(data.responseText).Message);
+						mui.alert("获取数据失败，请返回上级页面")
+						plus.nativeUI.closeWaiting();
 					},
 					complete: function complete(data) {
 						//after success or error
@@ -122,6 +126,7 @@ mui.plusReady(function() {
 							timeSshoutotalje = [],
 							timeIsOffset = [],
 							timeGouqimxid = [],
+							timeYonghuid=[],
 							sshoutotalje = 0;
 						for (var i = 0; i < data.length; i++) {
 							timeYhcode.push(data[i].yhcode)
@@ -129,13 +134,15 @@ mui.plusReady(function() {
 							timeSshoutotalje.push(data[i].sshoutotalje)
 							timeIsOffset.push(data[i].isOffset)
 							timeGouqimxid.push(data[i].gouqimxid)
-							sshoutotalje += parseFloat(data[i].sshoutotalje)
+							timeYonghuid.push(data[i].yonhuID)
+							sshoutotalje += parseFloat(data[i].sshoutotalje.toFixed(2))
 						}
 						window.localStorage.setItem("timeYhcode", timeYhcode)
 						window.localStorage.setItem("timeYhname", timeYhname)
 						window.localStorage.setItem("timeSshoutotalje", timeSshoutotalje)
 						window.localStorage.setItem("timeIsOffset", timeIsOffset)
 						window.localStorage.setItem("timeGouqimxid", timeGouqimxid)
+						window.localStorage.setItem("timeYonghuid", timeYonghuid)
 						var dataTime =
 							"<ul class=\"mui-table-view user-info\">\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u6536\u8D39\u5458\uFF1A" +
 							userName +
@@ -146,7 +153,7 @@ mui.plusReady(function() {
 							"</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u7968\u636E\u6570\uFF1A" +
 							data.length +
 							"\u5F20</span></li>\n            <li class=\"mui-table-view-cell\"><span class=\"\">\u5408\u8BA1\u91D1\u989D\uFF1A" +
-							sshoutotalje + "</span></li>\n        </ul>";
+							sshoutotalje.toFixed(2) + "</span></li>\n        </ul>";
 						window.localStorage.setItem("dataTime", dataTime)
 						mui.openWindow(userInfo)
 					},
@@ -204,6 +211,7 @@ mui.plusReady(function() {
 					yhphone: condition5
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
+				$(".search-btn").removeClass("search-btn-none")
 				break;
 			case "2":
 				data = {
@@ -215,7 +223,7 @@ mui.plusReady(function() {
 					adr: condition4
 				}
 				loadPages.usersList("herfIndex", apiArr, data, usersList)
-
+				$(".search-btn").removeClass("search-btn-none")
 				break;
 			case "3":
 				data = {
@@ -228,7 +236,7 @@ mui.plusReady(function() {
 				window.localStorage.setItem("startTime", startTime)
 				window.localStorage.setItem("endTime", endTime)
 				loadPages.time("herfIndex", apiArr, data, userInfo)
-
+				$(".search-btn").removeClass("search-btn-none")
 				break;
 
 		}

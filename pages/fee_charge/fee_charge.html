@@ -73,36 +73,41 @@
 				</li>
 				<button type="button" class="mui-btn-blue last-btn reading-btn">重新录入</button>
 			</ul>
-			<ul class="mui-table-view user-info cost-info" arrears="true">
+			<ul class="mui-table-view user-info cost-info">
 				<li class="mui-table-view-cell">
 					<span>欠费期数：</span>
-					<span class="yonghu-yingshoufei-length text-left"></span>
+					<span class="yonghu-yingshoufei-length"></span>
+				</li>
+				<li class="mui-table-view-cell">
 					<span>欠费气量：</span>
 					<span class="yonghu-yingshoufei-bcql"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span class="totalje-text">欠费金额：</span>
-					<span class="yonghu-yingshoufei-totalje text-left"></span>
-					<span>滞纳金：</span>
-					<span class="yonghu-yingshoufei-lateFee"></span>
-				</li>
-				<li class="mui-table-view-cell">
-					<span class="account-balance">账户余额：</span>
-					<span class="yonghu-yingshoufei-bcye text-left"></span>
-					<span>本次应收：</span>
+					<span>欠费金额：</span>
 					<span class="yonghu-yingshoufei-totalje"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<label class="reading-lable">收到金额：</label>
-					<input type="number" class="mui-input-clear cost-input" placeholder="请输入">
+					<span>　滞纳金：</span>
+					<span class="yonghu-yingshoufei-lateFee"></span>
 				</li>
 				<li class="mui-table-view-cell">
-					<span class="result-number">本次余额：</span>
-					<span class="yonghu-yingshoufei-this-balance">100.00</span>
+					<span>账户余额：</span>
+					<span class="yonghu-yingshoufei-bcye"></span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>本次应收：</span>
+					<span class="yonghu-yingshoufei-totalje-ys"></span>
+				</li>
+				<li class="mui-table-view-cell">
+					<label class="reading-lable">收到金额：</label>
+					<input type="number" class="mui-input-clear cost-input" placeholder="请输入" autofocus="autofocus">
+				</li>
+				<li class="mui-table-view-cell">
+					<span>本次余额：</span>
+					<span class="yonghu-yingshoufei-this-balance"></span>
 				</li>
 			</ul>
 			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">确认收费</button>
-
 		</div>
 		<!--底部导航-->
 		<footer class="mui-bar mui-bar-footer footer-nav">
@@ -127,6 +132,7 @@
 					},
 					userID = window.localStorage.getItem("userID"),
 					zuticode = window.localStorage.getItem("zuticode"),
+					number = 0,
 					/* 收费列表 */
 					costing = function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode, chargeResults) {
 						$.ajax({
@@ -136,11 +142,12 @@
 								ickaBh: ickaBh,
 								biaoHao: "",
 								je: inputVal,
-								yingShouFeiId: yingShouFeiId,
+								yingShouFeiId: yingShouFeiId + ",",
 								remark: "",
 								userId: userID,
 								zuticode: zuticode
 							},
+							timeout: 5000,
 							beforeSend: function() {
 								plus.nativeUI.showWaiting("等待中");
 							},
@@ -148,12 +155,13 @@
 								plus.nativeUI.closeWaiting();
 								var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
 									data1 = data.ResultDataTwo,
-									printData = [data1.rq, data1.UserName, data1.je, data1.bcje, data1.lateFee, data1.bcje + data1.je],
+									/* printData = [data1.rq, data1.UserName, data1.je, data1.bcje, data1.lateFee, data1.bcje + data1.je], */
 									//测试打印
 									PrintText = data.ResultData;
 								window.localStorage.setItem("gouqiMXid", data1.gouqiId)
-								window.localStorage.setItem("printData", printData)
-								bleObj.gotoPrint(PrintText);
+								/* 	window.localStorage.setItem("printData", printData) */
+								bleObj.gotoPrint("\r\n\r\n" + PrintText + "\r\n\r\n\r\n");
+								window.localStorage.setItem("PrintText1", data.ResultData)
 								/* 	mui.toast(data.DataMessage)
 									if (data.DataSuccess) {
 										mui.openWindow(usersList)
@@ -175,20 +183,41 @@
 				var savedBleId = localStorage.getItem("bleId");
 				if (savedBleId) {
 					var bleObj = new ConnectPrinter(savedBleId);
+
 				} else {
-					plus.nativeUI.confirm('打印机为设置，是否前往设置？', function(e) {
+					plus.nativeUI.confirm('打印机未设置，是否前往设置？', function(e) {
 						if (e.index === 0) {
 							mui.openWindow({
 								id: "/pages/printer.html",
 								url: "/pages/printer.html"
 							});
+						} else {
+							mui.toast("请先连接打印机!!")
 						}
 					});
 				}
 				$("#content").on("tap", ".confirm-btn", function() {
+					/* 	number++
+						if (number >= 1) {
+							mui.alert("不能重复收费")
+						} else {
+							
+						} */
 					var ickaBh = $(".yonghu-info-number").text(),
-						inputVal = $(".cost-input").val();
-					costing(costingApi, ickaBh, inputVal, "", userID, zuticode, chargeResults)
+						inputVal = Number($(".cost-input").val()),
+						totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
+						bcye = Number($(".yonghu-yingshoufei-bcye").text()),
+						yingShouFeiId = $(".yonghu-yingshoufei-length").eq(0).attr("yingshoufei-id");
+					costing(costingApi, ickaBh, inputVal, yingShouFeiId, userID, zuticode, chargeResults)
+
+					$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje).toFixed(2))
+				})
+				$("#content").on("change", ".cost-input", function() {
+					var inputVal = Number($(".cost-input").val()),
+						totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
+						bcye = Number($(".yonghu-yingshoufei-bcye").text());
+					$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje).toFixed(2))
+
 				})
 
 			})
