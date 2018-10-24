@@ -3,7 +3,8 @@ mui.plusReady(function() {
 	var readingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/MakeYongChaoBiao",
 		entryDetails = {
 			url: "/pages/meter_reading/entry_details.html",
-			id: "entry_details"
+			id: "entry_details",
+			createNew: true
 		},
 		userID = window.localStorage.getItem("userID"),
 		zuticode = window.localStorage.getItem("zuticode"),
@@ -21,24 +22,30 @@ mui.plusReady(function() {
 					xh: xh,
 					zids: zidsInput
 				},
-				timeout: 5000,
+				timeout: 10000,
 				beforeSend: function() {
 					plus.nativeUI.showWaiting("等待中");
 				},
 				success: function success(data) {
 					plus.nativeUI.closeWaiting();
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
-					mui.toast(data.DataMessage)
 					if (data.DataSuccess) {
-						mui.openWindow(entryDetails)
+						mui.toast(data.DataMessage)
+						if (data.DataSuccess) {
+							mui.openWindow(entryDetails)
+						}
+						/* mui.openWindow(entryDetails) */
+						$(".reading-input").trigger("click").focus()
+					} else {
+						mui.alert(data.DataMessage, "温馨提示", "确定", function() {}, "div")
+						plus.nativeUI.closeWaiting();
 					}
-					/* mui.openWindow(entryDetails) */
-					$(".reading-input").trigger("click").focus()
+
 				},
 				error: function error(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
 					//mui.alert(JSON.parse(data.responseText).Message);
-					mui.alert("获取数据失败，请返回上级页面")
+					mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 					plus.nativeUI.closeWaiting();
 				},
 				complete: function complete(data) {

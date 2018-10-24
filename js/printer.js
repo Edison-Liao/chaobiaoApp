@@ -204,39 +204,43 @@ var SearchBluetooth = function() {
 (function(window) {
 	window.ConnectPrinter = function(bleId) {
 		plus.nativeUI.showWaiting("正在连接打印机")
-		var plusMain = plus.android.runtimeMainActivity(),
-			BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter"),
-			UUID = plus.android.importClass("java.util.UUID"),
-			uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"),
-			BAdapter = BluetoothAdapter.getDefaultAdapter(),
-			device = BAdapter.getRemoteDevice(bleId);
+		try {
+			var plusMain = plus.android.runtimeMainActivity(),
+				BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter"),
+				UUID = plus.android.importClass("java.util.UUID"),
+				uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"),
+				BAdapter = BluetoothAdapter.getDefaultAdapter(),
+				device = BAdapter.getRemoteDevice(bleId);
+			plus.android.importClass(device);
+			var bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
+			plus.android.importClass(bluetoothSocket);
 
-		plus.android.importClass(device);
+			if (!bluetoothSocket.isConnected()) {
+				bluetoothSocket.connect();
+			}
+			if (bluetoothSocket.isConnected()) {
+				mui.toast("打印机已就绪，可正常打印!");
+				plus.nativeUI.closeWaiting();
+				window.localStorage.removeItem("isConnected")
+				this.gotoPrint = function(byteStr) {
+					var outputStream = bluetoothSocket.getOutputStream();
+					plus.android.importClass(outputStream);
+					var bytes = plus.android.invoke(byteStr, 'getBytes', 'gbk');
+					outputStream.write(bytes);
+					outputStream.flush();
+					device = null;
+					bluetoothSocket.close();
+				};
+			} else {
+				mui.toast("连接异常，请先正确连接打印机！")
+				$(".confirm-btn,.re-charge-btn").addClass("first-btn-active")
+				window.localStorage.setItem("isConnected", "true")
+			}
 
-		var bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
-		plus.android.importClass(bluetoothSocket);
-		if (!bluetoothSocket.isConnected()) {
-			
-			bluetoothSocket.connect();
-		}else{
-			mui.toast('打印机异常，请检查');
-		}
-		plus.nativeUI.closeWaiting();
-		mui.toast('打印机已就绪，可正常打印！');
-
-		if (bluetoothSocket.isConnected()) {
-			this.gotoPrint = function(byteStr) {
-				var outputStream = bluetoothSocket.getOutputStream();
-				plus.android.importClass(outputStream);
-				console.log(byteStr)
-				var bytes = plus.android.invoke(byteStr, 'getBytes', 'gbk');
-				outputStream.write(bytes);
-				outputStream.flush();
-				device = null;
-				bluetoothSocket.close();
-				// BluetoothDevice.connectGatt()
-			};
-		}
-		
-	};
+		} catch (e) {
+			mui.toast("连接异常，请先正确连接打印机！")
+			$(".confirm-btn,.re-charge-btn").addClass("first-btn-active")
+			window.localStorage.setItem("isConnected", "true")
+		};
+	}
 })(window);

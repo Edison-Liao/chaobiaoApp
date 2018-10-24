@@ -8,11 +8,13 @@ mui.plusReady(function() {
 		userID = window.localStorage.getItem("userID"),
 		costList = {
 			url: "/pages/cost_list.html",
-			id: "cost_list.html"
+			id: "cost_list.html",
+			createNew: true
 		},
 		chargeResults = {
 			url: "/pages/fee_charge/charge_results.html",
-			id: "charge_results.html"
+			id: "charge_results.html",
+			createNew: true
 		};
 
 	/* 根据不同的点击id渲染不同的页面 */
@@ -21,7 +23,6 @@ mui.plusReady(function() {
 			/* 从收费日报id点击查询 */
 		case "3":
 			$("#content").prepend(dataTime)
-			console.log(window.localStorage.getItem("printData"))
 			var timeYhcode = window.localStorage.getItem("timeYhcode").length > 1 ? window.localStorage.getItem("timeYhcode").split(
 					",") :
 				window.localStorage.getItem("timeYhcode"),

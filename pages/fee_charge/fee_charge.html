@@ -106,6 +106,7 @@
 					<span>本次余额：</span>
 					<span class="yonghu-yingshoufei-this-balance"></span>
 				</li>
+				<button type="button" class="mui-btn-blue first-btn return-search-btn">返回搜索</button>
 			</ul>
 			<button type="button" class="mui-btn mui-btn-blue mui-btn-block confirm-btn">确认收费</button>
 		</div>
@@ -122,106 +123,7 @@
 		<script src="../../js/login.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/users_list.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/test.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript">
-			mui.init();
-			mui.plusReady(function() {
-				var costingApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GernarlPayMoney",
-					chargeResults = {
-						url: "/pages/fee_charge/charge_results.html",
-						id: "charge_results"
-					},
-					userID = window.localStorage.getItem("userID"),
-					zuticode = window.localStorage.getItem("zuticode"),
-					number = 0,
-					/* 收费列表 */
-					costing = function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode, chargeResults) {
-						$.ajax({
-							url: api,
-							type: "Post",
-							data: {
-								ickaBh: ickaBh,
-								biaoHao: "",
-								je: inputVal,
-								yingShouFeiId: yingShouFeiId + ",",
-								remark: "",
-								userId: userID,
-								zuticode: zuticode
-							},
-							timeout: 5000,
-							beforeSend: function() {
-								plus.nativeUI.showWaiting("等待中");
-							},
-							success: function success(data) {
-								plus.nativeUI.closeWaiting();
-								var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue),
-									data1 = data.ResultDataTwo,
-									/* printData = [data1.rq, data1.UserName, data1.je, data1.bcje, data1.lateFee, data1.bcje + data1.je], */
-									//测试打印
-									PrintText = data.ResultData;
-								window.localStorage.setItem("gouqiMXid", data1.gouqiId)
-								/* 	window.localStorage.setItem("printData", printData) */
-								bleObj.gotoPrint("\r\n\r\n" + PrintText + "\r\n\r\n\r\n");
-								window.localStorage.setItem("PrintText1", data.ResultData)
-								/* 	mui.toast(data.DataMessage)
-									if (data.DataSuccess) {
-										mui.openWindow(usersList)
-									} */
-								mui.openWindow(chargeResults)
-
-							},
-							error: function error(data) {
-								//200的响应也有可能被认定为error，responseText中没有Message部分
-								//mui.alert(JSON.parse(data.responseText).Message);
-								mui.alert("获取数据失败，请返回上级页面")
-								plus.nativeUI.closeWaiting();
-							},
-							complete: function complete(data) {
-								//after success or error
-							}
-						});
-					};
-				var savedBleId = localStorage.getItem("bleId");
-				if (savedBleId) {
-					var bleObj = new ConnectPrinter(savedBleId);
-
-				} else {
-					plus.nativeUI.confirm('打印机未设置，是否前往设置？', function(e) {
-						if (e.index === 0) {
-							mui.openWindow({
-								id: "/pages/printer.html",
-								url: "/pages/printer.html"
-							});
-						} else {
-							mui.toast("请先连接打印机!!")
-						}
-					});
-				}
-				$("#content").on("tap", ".confirm-btn", function() {
-					/* 	number++
-						if (number >= 1) {
-							mui.alert("不能重复收费")
-						} else {
-							
-						} */
-					var ickaBh = $(".yonghu-info-number").text(),
-						inputVal = Number($(".cost-input").val()),
-						totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
-						bcye = Number($(".yonghu-yingshoufei-bcye").text()),
-						yingShouFeiId = $(".yonghu-yingshoufei-length").eq(0).attr("yingshoufei-id");
-					costing(costingApi, ickaBh, inputVal, yingShouFeiId, userID, zuticode, chargeResults)
-
-					$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje).toFixed(2))
-				})
-				$("#content").on("change", ".cost-input", function() {
-					var inputVal = Number($(".cost-input").val()),
-						totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
-						bcye = Number($(".yonghu-yingshoufei-bcye").text());
-					$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje).toFixed(2))
-
-				})
-
-			})
-		</script>
+		<script src="../../js/fee_charge.js" type="text/javascript" charset="utf-8"></script>
 	</body>
 
 </html>

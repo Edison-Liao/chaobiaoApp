@@ -16,7 +16,7 @@ mui.plusReady(function() {
 					pageSize: 100,
 					yonghuId: dataId
 				},
-				timeout: 5000,
+				timeout: 10000,
 				beforeSend: function() {
 					plus.nativeUI.showWaiting("等待中");
 				},
@@ -83,9 +83,8 @@ mui.plusReady(function() {
 
 						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-lateFee").text(0) : $(
 							".yonghu-yingshoufei-lateFee").text(lateFee.toFixed(2)) //滞纳金
-						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-bcye").text(0) : $(
-							".yonghu-yingshoufei-bcye").text(data.yonghuInfo.bcye.toFixed(2)) //账户余额
-						$(".yonghu-yingshoufei-length").attr("yingshoufei-id",yingshoufeiID)
+						$(".yonghu-yingshoufei-bcye").text(data.yonghuInfo.bcye.toFixed(2)) //账户余额
+						$(".yonghu-yingshoufei-length").attr("yingshoufei-id", yingshoufeiID)
 						$(".cost-input").val() //收到金额
 						$(".yonghu-yingshoufei-this-balance").text() //本次余额
 						if (totalje == 0) {
@@ -95,13 +94,13 @@ mui.plusReady(function() {
 							$(".user-info-list").attr("arrears", "true") //添加是否欠费属性
 							$(".pre-charge-btn").addClass("first-btn-active")
 						}
-						
+
 					}
 				},
 				error: function error(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
 					//mui.alert(JSON.parse(data.responseText).Message);
-					mui.alert("获取数据失败，请返回上级页面")
+					mui.alert("获取数据失败，请返回上级页面","温馨提示","确定",function(){},"div")
 					plus.nativeUI.closeWaiting();
 				},
 				complete: function complete(data) {
@@ -123,14 +122,16 @@ mui.plusReady(function() {
 	$("#content").on("tap", ".costing-btn", function() {
 		mui.openWindow({
 			url: "/pages/fee_charge/fee_charge.html",
-			id: "fee_charge"
+			id: "fee_charge",
+			createNew: true
 		})
 	})
 	// 点击费用记录跳转页面
 	$("#content").on("tap", ".cost-record-btn", function() {
 		mui.openWindow({
 			url: "/pages/user_info/cost_record.html",
-			id: "cost_record.html"
+			id: "cost_record.html",
+			createNew: true
 		})
 	})
 
@@ -139,7 +140,8 @@ mui.plusReady(function() {
 		if ($(".user-info-list").attr("arrears") == "false") {
 			mui.openWindow({
 				url: "/pages/fee_charge/fee_charge.html",
-				id: "fee_charge"
+				id: "fee_charge",
+				createNew: true
 			})
 		}
 	})
@@ -147,15 +149,24 @@ mui.plusReady(function() {
 	$("#content").on("tap", ".file-details-btn", function() {
 		mui.openWindow({
 			url: "/pages/user_info/user_info.html",
-			id: "user_info.html"
+			id: "user_info.html",
+			createNew: true
 		})
 	})
 	//点击重新录入跳转录入界面
 	$("#content").on("tap", ".again-reading-btn", function() {
 		mui.openWindow({
 			url: "/pages/meter_reading/meter_reading.html",
-			id: "meter_reading"
+			id: "meter_reading",
+			createNew: true
 		})
 	})
-
+	//返回搜索按钮跳转收费搜索界面
+	$("#content").on("tap", ".return-search-btn", function() {
+		mui.openWindow({
+			url: "/pages/search.html",
+			id: "go-search.html",
+			createNew: true
+		})
+	})
 })

@@ -22,7 +22,7 @@
 						type: "POST",
 						dataType: "xml",
 						data: "",
-						timeout:5000,
+						timeout: 10000,
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
@@ -43,7 +43,7 @@
 							//alert($.parseJSON(data.responseText).Message);
 							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
 											var result = $.parseJSON(jsonData); // 转成JSON对象*/
-							mui.alert("获取数据失败，请返回上级页面")
+							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
 						complete: function(data) { //after success or error
@@ -58,7 +58,7 @@
 						data: {
 							userId: dataID
 						},
-						timeout: 5000, //超时时间设置为10秒；
+						timeout: 10000, //超时时间设置为10秒；
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
@@ -79,7 +79,7 @@
 							//alert($.parseJSON(data.responseText).Message);
 							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
 											var result = $.parseJSON(jsonData); // 转成JSON对象*/
-							mui.alert("获取数据失败，请返回上级页面")
+							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
 						complete: function(data) { //after success or error
@@ -94,7 +94,7 @@
 						data: {
 							zbId: dataID
 						},
-						timeout:5000,
+						timeout: 10000,
 						beforeSend: function() {
 							plus.nativeUI.showWaiting("等待中");
 						},
@@ -115,7 +115,7 @@
 							//alert($.parseJSON(data.responseText).Message);
 							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
 											var result = $.parseJSON(jsonData); // 转成JSON对象*/
-							mui.alert("获取数据失败，请返回上级页面")
+							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
 						complete: function(data) { //after success or error
@@ -128,8 +128,10 @@
 		var userPicker = new $.PopPicker();
 		/* 调用小区方法 */
 		$("#content").on("tap", "#community", function(event) {
+			// console.log($("#content").html());
 			inputList.communityList(communityApi, dataList)
 			var community = document.getElementById("community").getElementsByTagName("input")[0];
+			community.focus()
 			userPicker.show(function(items, index) {
 				community.value = items[0].text;
 				window.localStorage.setItem("xiaoquid", items[0].value)
@@ -139,6 +141,7 @@
 		$("#content").on("tap", "#account-book", function(event) {
 			inputList.accountBook(accountApi, userID, dataList)
 			var accountBook = document.getElementById("account-book").getElementsByTagName("input")[0];
+			accountBook.focus()
 			userPicker.show(function(items, index) {
 				accountBook.value = items[0].text;
 				window.localStorage.setItem("accountBook", items[0].value)
@@ -150,7 +153,7 @@
 			if (accountID !== null) {
 				inputList.readBook(readApi, accountID, dataList)
 				var readBook = document.getElementById("read-book").getElementsByTagName("input")[0];
-
+				readBook.focus()
 				userPicker.show(function(items, index) {
 					readBook.value = items[0].text;
 					window.localStorage.setItem("readBook", items[0].value)

@@ -16,6 +16,14 @@
 	color: #ffffff;
 }
 
+/* 弹出菜单部分 */
+.mui-popover {
+	width: 25%;
+}
+
+.mui-popover a {
+	text-align: center;
+}
 
 /*页面主体部分*/
 
@@ -31,10 +39,22 @@
 	padding-left: 20px;
 }
 
+.clear-float:after {
+	display: block;
+	clear: both;
+	content: "";
+	visibility: hidden;
+	height: 0
+}
+
 .go-home,
-.go-out {
-	margin-top: 8px;
-	font-size: 22px;
+.go-out,
+.go-more {
+	font-size: 24px;
+	position: relative;
+	z-index: 20;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 
@@ -240,6 +260,19 @@
 	border-radius: 5px;
 	padding-left: 2%;
 }
+.input-must{
+	color: #FF0000;
+	display: block;
+	position: absolute;
+}
+.must{
+    left: 85%;
+    top: 9%;
+}
+.must:last-child{
+    left: 85%;
+    top: 26%;
+} 
 
 .search-btn {
 	width: 80%;

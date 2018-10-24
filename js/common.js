@@ -5,7 +5,8 @@ mui.plusReady(function() {
 		adminName = $("#admin-name"),
 		indexHtml = {
 			url: "/index.html",
-			id: "index.html"
+			id: "index.html",
+			createNew: true
 		},
 		loginHtml = {
 			url: "/pages/login.html",
@@ -16,11 +17,11 @@ mui.plusReady(function() {
 			url: "/pages/search.html",
 			id: "search.html",
 			createNew: true
-		}
-	herfIndex = "herfIndex",
+		},
+		herfIndex = "herfIndex",
 		titleNode = "首页",
 		homeMes = "这已经是首页了！",
-		ouTmes = "再按一次退出",
+		ouTmes = ["确定", "取消"],
 		/*封装函数方法*/
 		reading_method = {
 			/*判断是否需要登陆
@@ -46,26 +47,25 @@ mui.plusReady(function() {
 			goHome: function(title, titleIf, mes, openInfo) {
 				var title = title.text();
 				if (title == titleIf) {
-					mui.alert(mes)
+					mui.alert(mes, "温馨提示", "确定", function() {}, "div")
 				} else {
 					mui.openWindow(openInfo)
-					window.localStorage.setItem("herfIndex", "")
+					window.localStorage.removeItem("herfIndex")
 				}
 			},
 			/*退出功能
 			 * number:number,
 			 * mes:string(提示)
 			 * */
-			goOut: function(number, mes) {
-				if (number >= 1) {
-					plus.runtime.quit();
-				} else {
-					mui.toast(mes);
-				}
-				setTimeout(function() {
-					number = 0
-				}, 1000);
-				return false;
+			goOut: function(mes) {
+
+				mui.confirm('是否退出app？', '温馨提示', mes, function(e) {
+					if (e.index == 0) {
+						window.localStorage.removeItem("userName")
+						plus.runtime.quit();
+					}
+				}, "div");
+
 			},
 			/*跳转页面功能
 			 * ele：$()(点击的元素)
@@ -88,21 +88,38 @@ mui.plusReady(function() {
 	/* 调用是否登陆功能 */
 	reading_method.judge(userName, adminName, loginHtml)
 	/*调用返回首页功能*/
-	mui(".footer-nav").on("tap", "#go-home", function() {
+	mui(".footer-nav").on("click", "#go-home", function() {
+		mui.init();
 		var title = $(".header-title>h1");
 		reading_method.goHome(title, titleNode, homeMes, indexHtml)
-		console.log(window.localStorage.getItem("herfIndex"))
 	})
 	/*调用退出功能*/
-	mui(".footer-nav").on("tap", "#go-out", function() {
-		clickNum++;
-		reading_method.goOut(clickNum, ouTmes)
-		window.localStorage.removeItem("userName")
+	mui(".footer-nav").on("click", "#go-out", function() {
+		mui.init();
+		reading_method.goOut(ouTmes)
 	})
 	/*调用点击跳转事件*/
 	mui(".mui-grid-9").on("tap", ".mui-media", function() {
 		var $this = $(this);
 		reading_method.goPages($this, searchHtml, herfIndex)
 	})
-
+	/*   点击扫一扫跳转页面 */
+	mui("#popover").on("tap", ".scanning", function() {
+		mui.openWindow({
+			url: "/pages/scanning.html",
+			id: "scanning.html"
+		})
+		mui('#popover').popover('toggle');
+	})
+	var title = $(".header-title>h1");
+	if (title == titleNode) {
+		mui.back = function() {
+			plus.runtime.quit();
+			// 			mui.confirm('是否退出app？', '温馨提示', mes, function(e) {
+			// 				if (e.index == 0) {
+			// 					plus.runtime.quit();
+			// 				}
+			// 			}, "div")
+		}
+	}
 })

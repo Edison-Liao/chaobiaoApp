@@ -3,7 +3,8 @@ mui.plusReady(function() {
 	var api = "http://223.85.248.171:8012/ashx/WebAppUserInfo.asmx/GetUserLogin", //调用登陆接口
 		indexHtml = {
 			url: "/index.html",
-			id: "index.html"
+			id: "index.html",
+			createNew: true
 		},
 		/*登录方法
 		 * api:string(ajax调用地址),
@@ -19,7 +20,7 @@ mui.plusReady(function() {
 					userCode: userID,
 					userPass: userPass
 				},
-				timeout: 5000,
+				timeout: 10000,
 				beforeSend: function() {
 					plus.nativeUI.showWaiting("等待中");
 				},
@@ -31,7 +32,7 @@ mui.plusReady(function() {
 						UserDepart = "",
 						zuticode = "";
 					if (data.DataSuccess) {
-						
+
 						userName = data.ResultData.UserName
 						userId = data.ResultData.userId
 						UserDepart = data.ResultData.UserDepart
@@ -49,7 +50,7 @@ mui.plusReady(function() {
 				},
 				error: function(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
-					mui.alert("连接网关失败，请检查网络！")
+					mui.alert("连接网关失败，请检查网络！","温馨提示","确定",function(){},"div")
 					plus.nativeUI.closeWaiting();
 					//mui.alert(JSON.parse(data.responseText).Message);
 
@@ -65,5 +66,4 @@ mui.plusReady(function() {
 			userPass = $("#user-pass").val();
 		login(api, userID, userPass, indexHtml)
 	})
-
 })
