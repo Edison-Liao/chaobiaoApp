@@ -52,7 +52,6 @@ mui.plusReady(function() {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
 					mui.alert("连接网关失败，请检查网络！","温馨提示","确定",function(){},"div")
 					plus.nativeUI.closeWaiting();
-					//mui.alert(JSON.parse(data.responseText).Message);
 
 				},
 				complete: function(data) {

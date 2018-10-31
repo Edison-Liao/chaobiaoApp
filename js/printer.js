@@ -57,7 +57,10 @@ var SearchBluetooth = function() {
 
 						var testBondState = setInterval(function() {
 							if (BleDeviceItem.getBondState() === bdevice.BOND_BONDED) {
-								mui.toast("配对成功");
+								mui.toast("配对成功", {
+									duration: 'short',
+									type: 'div'
+								});
 								self.SetButtonStatus("配对成功正在尝试连接打印机...", true);
 								localStorage.setItem("bleId", id);
 
@@ -66,7 +69,10 @@ var SearchBluetooth = function() {
 								window.clearInterval(testBondState);
 								mui.back();
 							} else if (BleDeviceItem.getBondState() === bdevice.BOND_NONE) {
-								mui.toast("配对失败");
+								mui.toast("配对失败", {
+									duration: 'short',
+									type: 'div'
+								});
 								window.clearInterval(testBondState);
 								self.SetButtonStatus("重新搜索设备", false);
 							}
@@ -77,7 +83,10 @@ var SearchBluetooth = function() {
 				}
 
 				if (state) {
-					mui.toast("配对失败请重新搜索设备");
+					mui.toast("配对失败请重新搜索设备", {
+						duration: 'short',
+						type: 'div'
+					});
 					self.SetButtonStatus("重新搜索设备", false);
 				}
 			});
@@ -90,6 +99,13 @@ var SearchBluetooth = function() {
 					localStorage.setItem("bleId", id);
 					var bleObj = new ConnectPrinter(id);
 					bleObj = null;
+					var fee_charge = plus.webview.getWebviewById("fee_charge.html"),
+						charge_results = plus.webview.getWebviewById("charge_results");
+					if (fee_charge != null&&fee_charge.id=="fee_charge.html") {
+						fee_charge.reload(true);
+					}else if(charge_results!= null&&charge_results.id=="charge_results"){
+						charge_results.reload(true);
+					}
 					mui.back();
 				}
 			});
@@ -203,8 +219,8 @@ var SearchBluetooth = function() {
 //连接打印机和打印
 (function(window) {
 	window.ConnectPrinter = function(bleId) {
-		plus.nativeUI.showWaiting("正在连接打印机")
 		try {
+			plus.nativeUI.showWaiting("正在连接打印机")
 			var plusMain = plus.android.runtimeMainActivity(),
 				BluetoothAdapter = plus.android.importClass("android.bluetooth.BluetoothAdapter"),
 				UUID = plus.android.importClass("java.util.UUID"),
@@ -219,7 +235,11 @@ var SearchBluetooth = function() {
 				bluetoothSocket.connect();
 			}
 			if (bluetoothSocket.isConnected()) {
-				mui.toast("打印机已就绪，可正常打印!");
+				mui.toast("打印机已就绪，可正常打印!", {
+					duration: 'short',
+					type: 'div'
+				});
+				$(".confirm-btn,.re-charge-btn").removeClass("first-btn-active")
 				plus.nativeUI.closeWaiting();
 				window.localStorage.removeItem("isConnected")
 				this.gotoPrint = function(byteStr) {
@@ -232,13 +252,19 @@ var SearchBluetooth = function() {
 					bluetoothSocket.close();
 				};
 			} else {
-				mui.toast("连接异常，请先正确连接打印机！")
+				mui.toast("连接异常，请先正确连接打印机！", {
+					duration: 'short',
+					type: 'div'
+				})
 				$(".confirm-btn,.re-charge-btn").addClass("first-btn-active")
 				window.localStorage.setItem("isConnected", "true")
 			}
 
 		} catch (e) {
-			mui.toast("连接异常，请先正确连接打印机！")
+			mui.toast("连接异常，请先正确连接打印机！", {
+				duration: 'short',
+				type: 'div'
+			})
 			$(".confirm-btn,.re-charge-btn").addClass("first-btn-active")
 			window.localStorage.setItem("isConnected", "true")
 		};

@@ -5,6 +5,7 @@
 
 .header-title {
 	background-color: #007BE6;
+	
 }
 
 .header-title>h1 {
@@ -14,15 +15,6 @@
 
 .header-title>a {
 	color: #ffffff;
-}
-
-/* 弹出菜单部分 */
-.mui-popover {
-	width: 25%;
-}
-
-.mui-popover a {
-	text-align: center;
 }
 
 /*页面主体部分*/
@@ -58,7 +50,7 @@
 }
 
 
-/*  */
+/*input边框线  */
 
 .mui-input-group:after,
 .mui-input-group:before {
@@ -260,19 +252,22 @@
 	border-radius: 5px;
 	padding-left: 2%;
 }
-.input-must{
+
+.input-must {
 	color: #FF0000;
 	display: block;
 	position: absolute;
 }
-.must{
-    left: 85%;
-    top: 9%;
+
+.must {
+	left: 85%;
+	top: 9%;
 }
-.must:last-child{
-    left: 85%;
-    top: 26%;
-} 
+
+.must:last-child {
+	left: 85%;
+	top: 26%;
+}
 
 .search-btn {
 	width: 80%;
@@ -326,6 +321,12 @@
 	white-space: nowrap;
 }
 
+.users-number{
+	max-width: 90px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 .mui-table-view-cell>.money-table-number {
 	font-size: 14px;
 	color: #000000;
@@ -401,6 +402,10 @@
 	background-color: #c7c7c7;
 	border: 1px solid #e6e6e6;
 
+}
+
+.date-active {
+	display: none;
 }
 
 .last-btn {
@@ -486,6 +491,7 @@
 	color: #000000;
 }
 
-.cost-record span {
+.cost-record .cost-record-left,
+.cost-record .cost-record-right {
 	display: block;
 }

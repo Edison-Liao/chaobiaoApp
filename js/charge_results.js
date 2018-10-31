@@ -7,14 +7,21 @@ mui.plusReady(function() {
 	if (savedBleId) {
 		var bleObj = new ConnectPrinter(savedBleId);
 	} else {
-		plus.nativeUI.confirm("打印机未设置，是否前往设置？", function(e) {
+		mui.confirm("打印机未设置，是否前往设置？", "温馨提示", ["确定", "取消"], function(e) {
 			if (e.index === 0) {
 				mui.openWindow({
 					id: "/pages/printer.html",
 					url: "/pages/printer.html",
 				});
+			} else {
+				window.localStorage.removeItem("bleId");
+				$(".re-charge-btn").addClass("first-btn-active")
+				mui.toast("请先连接打印机!", {
+					duration: 'short',
+					type: 'div'
+				})
 			}
-		});
+		}, "div");
 	}
 	replayTicket = function(api, gouqiMXid) {
 		$.ajax({
@@ -40,8 +47,7 @@ mui.plusReady(function() {
 			},
 			error: function error(data) {
 				//200的响应也有可能被认定为error，responseText中没有Message部分
-				//mui.alert(JSON.parse(data.responseText).Message);
-				mui.alert("获取数据失败，请返回上级页面","温馨提示","确定",function(){},"div")
+				mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 				plus.nativeUI.closeWaiting();
 			},
 			complete: function complete(data) {
@@ -50,9 +56,16 @@ mui.plusReady(function() {
 		})
 	};
 	replayTicket(gouqiMXapi, gouqiMXid)
-	$("#content").on("tap", ".re-charge-btn", function() {
-		var fapiaoInfo=window.localStorage.getItem("xiaopiao")
-		bleObj.gotoPrint("\r\n\r\n" +fapiaoInfo +"\r\n\r\n\r\n\r\n");
-		bleObj = new ConnectPrinter(savedBleId);
-	})
+	if (window.localStorage.getItem("isConnected") == null && savedBleId !== null) {
+		$("#content").on("tap", ".re-charge-btn", function() {
+			var fapiaoInfo = window.localStorage.getItem("xiaopiao")
+			bleObj.gotoPrint("\r\n\r\n" + fapiaoInfo + "\r\n\r\n\r\n\r\n\r\n\r\n");
+			bleObj = new ConnectPrinter(savedBleId);
+		})
+	} else {
+		$(".re-charge-btn").addClass("first-btn-active")
+		$("#content").on("tap", ".re-charge-btn", function() {
+			mui.alert("请先返回上级页面,检查蓝牙或打印机", "温馨提示", "确定", function() {}, "div")
+		})
+	}
 })

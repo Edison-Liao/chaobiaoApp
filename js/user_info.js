@@ -1,81 +1,190 @@
 mui.init();
 mui.plusReady(function() {
-	var infoId = window.localStorage.getItem("data-id"),
-		herfIndex = window.localStorage.getItem("herfIndex"),
-		dataTime = window.localStorage.getItem("dataTime"),
-		endTime = window.localStorage.getItem("endTime"),
-		userName = window.localStorage.getItem("userName"),
-		userID = window.localStorage.getItem("userID"),
-		costList = {
-			url: "/pages/cost_list.html",
-			id: "cost_list.html",
-			createNew: true
-		},
-		chargeResults = {
-			url: "/pages/fee_charge/charge_results.html",
-			id: "charge_results.html",
-			createNew: true
-		};
-
-	/* 根据不同的点击id渲染不同的页面 */
-	switch (herfIndex) {
-
-			/* 从收费日报id点击查询 */
-		case "3":
-			$("#content").prepend(dataTime)
-			var timeYhcode = window.localStorage.getItem("timeYhcode").length > 1 ? window.localStorage.getItem("timeYhcode").split(
-					",") :
-				window.localStorage.getItem("timeYhcode"),
-				timeYhname = window.localStorage.getItem("timeYhname").length > 1 ? window.localStorage.getItem("timeYhname").split(
-					",") :
-				window.localStorage.getItem("timeYhname"),
-				timeSshoutotalje = window.localStorage.getItem("timeSshoutotalje").length > 1 ? window.localStorage.getItem(
-					"timeSshoutotalje").split(",") :
-				window.localStorage.getItem("timeSshoutotalje"),
-				timeIsOffset = window.localStorage.getItem("timeIsOffset").length > 1 ? window.localStorage.getItem(
-					"timeIsOffset").split(",") :
-				window.localStorage.getItem("timeIsOffset"),
-				timeGouqimxid = window.localStorage.getItem("timeGouqimxid").length > 1 ? window.localStorage.getItem(
-					"timeGouqimxid").split(",") :
-				window.localStorage.getItem("timeGouqimxid"),
-				timeYonghuid = window.localStorage.getItem("timeYonghuid").length > 1 ? window.localStorage.getItem(
-					"timeYonghuid").split(",") :
-				window.localStorage.getItem("timeYonghuid");
-			
-			for (var i = 0; i < timeYhcode.length; i++) {
-				if (!timeIsOffset[i]) {
-					$(".cost-list").append(
-						" \n            <li class=\"mui-table-view-cell cost-li-list\">\n            <p class=\"money-table-number\"><span class=\"mui-pull-left users-name\">\u6237\u53F7: " +
-						timeYhcode[i] + "</span><span class=\"users-number mui-pull-left\">\u91D1\u989D\uFF1A" + Number(timeSshoutotalje[i]).toFixed(2) +
-						"\u5143</span><span class=\"mui-pull-left is-read is-read-false\")}>" + (timeIsOffset[i] ? "正常" : "已作废") +
-						"</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\"><span class=\"address\">\u6237\u540D\uFF1A" +
-						timeYhname[i] + "</span></p>\n        </li>")
-				} else {
-					$(".cost-list").append(
-						" \n            <li class=\"mui-table-view-cell cost-li-list\">\n            <p class=\"money-table-number\"><span class=\"mui-pull-left users-name\">\u6237\u53F7: " +
-						timeYhcode[i] + "</span><span class=\"users-number mui-pull-left\">\u91D1\u989D\uFF1A" + Number(timeSshoutotalje[i]).toFixed(2) +
-						"\u5143</span><span class=\"mui-pull-left is-read is-read-true\")}>" + (!timeIsOffset[i] ? "已作废" : "正常") +
-						"</span></p>\n            <a class=\"fa fa-angle-right mui-pull-right list-right\"></a>\n            <p class=\"users-address\"><span class=\"address\">\u6237\u540D\uFF1A" +
-						timeYhname[i] + "</span></p>\n        </li>")
+	//获取对应用户id
+	var dataId = window.localStorage.getItem("data-id"),
+		//获取用户想起api
+		userInfoApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuInfo",
+		// 未欠费添加状态
+		arrears = window.localStorage.getItem("arrears") == "false",
+		//获取用户详情方法
+		userInfo = function(api, dataId) {
+			$.ajax({
+				url: api,
+				type: "Post",
+				data: {
+					pageNow: 1,
+					pageSize: 100,
+					yonghuId: dataId
+				},
+				timeout: 10000,
+				beforeSend: function() {
+					plus.nativeUI.showWaiting("等待中");
+				},
+				success: function success(data) {
+					plus.nativeUI.closeWaiting();
+					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue).ResultData;
+					/* 用户详情列表 */
+					$(".yonghu-info-code").text(data.yonghuInfo.yhcode)
+					$(".yonghu-info-name").text(data.yonghuInfo.yhname)
+					$(".yonghu-info-address").text(data.yonghuInfo.AddressMS)
+					$(".yonghu-info-phone").text(data.yonghuInfo.handPhone)
+					$(".yonghu-info-balance").text(data.yonghuInfo.bcye.toFixed(2))
+					$(".yonghu-info-state").text(data.yonghuInfo.ztbz == 1 ? "正常" : data.yonghuInfo.ztbz == 2 ? "停用" : "未启用")
+					$(".yonghu-info-number").text(data.yonghuInfo.yhbiaobh)
+					$(".yonghu-info-number").attr("icka-bh", data.yonghuInfo.ickaBH)
+					$(".yonghu-info-standard").text(data.yonghuInfo.JGName)
+					$(".yonghu-info-code").attr("xh", data.yonghuInfo.xh)
+					/* 立即抄表列表 */
+					if (data.yonghuChaobiao != null) {
+						if (data.yonghuChaobiao.sfztcodeYsf == "2") {
+							$(".reading-chaobiao").removeClass("search-btn-none")
+							$(".yonghu-chaobiao-year").text(data.yonghuChaobiao.kjyear)
+							$(".yonghu-chaobiao-period").text(data.yonghuChaobiao.period)
+							$(".yonghu-chaobiao-ischaobiao").text(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" :
+									"已抄表"),
+								$(".yonghu-chaobiao-Qids").text(data.yonghuChaobiao.Qids)
+							$(".yonghu-chaobiao-Zhids").text(data.yonghuChaobiao.Zhids)
+							$(".reading-input").val(data.yonghuChaobiao.Zhids)
+							$(".chaobiao-zhidushu-span").addClass("search-btn-none")
+							$(".yonghu-chaobiao-cjql").text(data.yonghuChaobiao.Zhids - data.yonghuChaobiao.Qids)
+							$(".yonghu-chaobiao-bcql1").text(data.yonghuChaobiao.bcql1)
+							$(".yonghu-chaobiao-je1").text(data.yonghuChaobiao.jg1.toFixed(2))
+							$(".yonghu-chaobiao-gas-charge1").text((data.yonghuChaobiao.bcql1 * data.yonghuChaobiao.jg1).toFixed(2))
+							$(".yonghu-chaobiao-bcql2").text(data.yonghuChaobiao.bcql2)
+							$(".yonghu-chaobiao-je2").text(data.yonghuChaobiao.jg2.toFixed(2))
+							$(".yonghu-chaobiao-gas-charge2").text((data.yonghuChaobiao.bcql2 * data.yonghuChaobiao.jg2).toFixed(2))
+							$(".yonghu-chaobiao-bcql3").text(data.yonghuChaobiao.bcql3)
+							$(".yonghu-chaobiao-je3").text(data.yonghuChaobiao.jg3.toFixed(2))
+							$(".yonghu-chaobiao-gas-charge3").text((data.yonghuChaobiao.bcql3 * data.yonghuChaobiao.jg3).toFixed(2))
+							$(".yonghu-chaobiao-bcql4").text(data.yonghuChaobiao.bcql4)
+							$(".yonghu-chaobiao-je4").text(data.yonghuChaobiao.jg4.toFixed(2))
+							$(".yonghu-chaobiao-gas-charge4").text((data.yonghuChaobiao.bcql4 * data.yonghuChaobiao.jg4).toFixed(2))
+						} else {
+							$(".reading-btn").addClass("search-btn-none")
+							$(".save-btn").addClass("search-btn-none")
+							$(".yonghu-chaobiao-year").text(data.yonghuChaobiao.kjyear)
+							$(".yonghu-chaobiao-period").text(data.yonghuChaobiao.period)
+							$(".yonghu-chaobiao-ischaobiao").text(data.yonghuChaobiao.Qids == data.yonghuChaobiao.Zhids ? "未抄表" :
+									"已抄表"),
+								$(".yonghu-chaobiao-Qids").text(data.yonghuChaobiao.Qids)
+							$(".yonghu-chaobiao-Zhids").text(data.yonghuChaobiao.Zhids)
+							$(".reading-input").val(data.yonghuChaobiao.Zhids)
+							$(".chaobiao-zhidushu-input").addClass("search-btn-none")
+							$(".yonghu-chaobiao-cjql").text(data.yonghuChaobiao.Zhids - data.yonghuChaobiao.Qids)
+						}
+					} else {
+						$(".reading-chaobiao").addClass("search-btn-none")
+						$(".save-btn").addClass("search-btn-none")
+					}
+					/* 立即收费 */
+					if (data.yonghuYingShouFei !== "") {
+						var bcql = 0, //欠费气量													
+							totalje = 0, //应收金额和欠费金额						
+							lateFee = 0, //滞纳金
+							yingshoufeiID = []; //应收费id
+						for (var i = 0; i < data.yonghuYingShouFei.length; i++) {
+							yingshoufeiID.push(data.yonghuYingShouFei[i].yshoufeiid) //应收费id
+							bcql += parseFloat(data.yonghuYingShouFei[i].bcql); //欠费气量相加
+							totalje += parseFloat((data.yonghuYingShouFei[i].totalje).toFixed(2)); //应收金额和欠费金额相加	
+							lateFee += parseFloat((data.yonghuYingShouFei[i].lateFee).toFixed(2)); //滞纳金相加
+						}
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-length").text(data.yonghuYingShouFei.length) : $(
+							".yonghu-yingshoufei-length").text(data.yonghuYingShouFei.length + "　　") //欠费期数
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-bcql").text(0) : $(".yonghu-yingshoufei-bcql")
+							.text(bcql) //欠费气量
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-totalje").text(0) : $(
+							".yonghu-yingshoufei-totalje").text(totalje.toFixed(2)) //欠费金额
+						if ((data.yonghuInfo.bcye - (totalje + lateFee)) >= 0) {
+							$(".yonghu-yingshoufei-totalje-ys").text(0)
+						} else {
+							$(".yonghu-yingshoufei-totalje-ys").text((totalje + lateFee-data.yonghuInfo.bcye).toFixed(2))
+						}
+						data.yonghuYingShouFei.length == 0 ? $(".yonghu-yingshoufei-lateFee").text(0) : $(
+							".yonghu-yingshoufei-lateFee").text(lateFee.toFixed(2)) //滞纳金
+						$(".yonghu-yingshoufei-bcye").text(data.yonghuInfo.bcye.toFixed(2)) //账户余额
+						$(".yonghu-yingshoufei-length").attr("yingshoufei-id", yingshoufeiID)
+						$(".cost-input").val($(".yonghu-yingshoufei-totalje-ys").text()) //收到金额
+						$(".yonghu-yingshoufei-this-balance").text() //本次余额
+						if (totalje == 0) {
+							$(".user-info-list").attr("arrears", "false")
+							$(".pre-charge-btn").removeClass("first-btn-active") //添加是否欠费属性
+						} else {
+							$(".user-info-list").attr("arrears", "true") //添加是否欠费属性
+							$(".pre-charge-btn").addClass("first-btn-active")
+						}
+					} else {
+						$(".user-info").addClass("first-btn-active")
+					}
+				},
+				error: function error(data) {
+					//200的响应也有可能被认定为error，responseText中没有Message部分
+					mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
+					plus.nativeUI.closeWaiting();
+				},
+				complete: function complete(data) {
+					//after success or error
 				}
-			}
 
-			/* 购气明细记录id */
-			$(".cost-li-list").each(function(index, item) {
-
-				$(item).attr("gouqimx-id", timeGouqimxid[index]);
-				$(item).attr("data-id",timeYonghuid[index]);
 			});
-			/* 点击列表每一个获取购气明细id */
-			$('.cost-list').on("tap", ".cost-li-list", function() {
-				window.localStorage.setItem("gouqiMXid",$(this).attr("gouqimx-id"))
+		}
+	// 调用用户详情页面方法
+	userInfo(userInfoApi, dataId)
+	// 点击立即抄表跳转抄表页面
+	$("#content").on("tap", ".reading-btn", function() {
+		mui.openWindow({
+			url: "/pages/meter_reading/meter_reading.html",
+			id: "meter_reading"
+		})
+	})
+	// 点击立即收费跳转收费页面
+	$("#content").on("tap", ".costing-btn", function() {
+		mui.openWindow({
+			url: "/pages/fee_charge/fee_charge.html",
+			id: "fee_charge",
+			createNew: true
+		})
+	})
+	// 点击费用记录跳转页面
+	$("#content").on("tap", ".cost-record-btn", function() {
+		mui.openWindow({
+			url: "/pages/user_info/cost_record.html",
+			id: "cost_record.html",
+			createNew: true
+		})
+	})
+
+	// 点击预收费按钮跳转首页页面
+	$("#content").on("tap", ".pre-charge-btn", function() {
+		if ($(".user-info-list").attr("arrears") == "false") {
+			mui.openWindow({
+				url: "/pages/fee_charge/fee_charge.html",
+				id: "fee_charge",
+				createNew: true
 			})
-			break;
-
-	}
-
-
-
-
-
+		}
+	})
+	//点击跳转档案详情页面
+	$("#content").on("tap", ".file-details-btn", function() {
+		mui.openWindow({
+			url: "/pages/user_info/user_info.html",
+			id: "user_info.html",
+			createNew: true
+		})
+	})
+	//点击重新录入跳转录入界面
+	$("#content").on("tap", ".again-reading-btn", function() {
+		mui.openWindow({
+			url: "/pages/meter_reading/meter_reading.html",
+			id: "meter_reading",
+			createNew: true
+		})
+	})
+	//返回搜索按钮跳转收费搜索界面
+	$("#content").on("tap", ".return-search-btn", function() {
+		mui.openWindow({
+			url: "/pages/search.html",
+			id: "go-search.html",
+			createNew: true
+		})
+	})
 })

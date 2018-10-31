@@ -37,15 +37,22 @@ mui.plusReady(function() {
 							//测试打印
 							PrintText = data.ResultData;
 						window.localStorage.setItem("gouqiMXid", data1.gouqiId)
-						bleObj.gotoPrint("\r\n\r\n" + PrintText + "\r\n\r\n\r\n");
+						bleObj.gotoPrint("\r\n\r\n" + PrintText + "\r\n\r\n\r\n\r\n\r\n\r\n");
+						mui.alert("收费成功！", "温馨提示", "确定", function(e) {
+							if (e.index == 0) {
+								mui.openWindow(indexHtml)
+							}
+						}, "div")
 					} else {
-						mui.alert(data.DataMessage, "温馨提示", "确定", function() {}, "div")
+						mui.toast(data.DataMessage, {
+							duration: 'short',
+							type: 'div'
+						})
 						plus.nativeUI.closeWaiting();
 					}
 				},
 				error: function error(data) {
 					//200的响应也有可能被认定为error，responseText中没有Message部分
-					//mui.alert(JSON.parse(data.responseText).Message);
 					mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 					plus.nativeUI.closeWaiting();
 				},
@@ -54,56 +61,77 @@ mui.plusReady(function() {
 				}
 			});
 		};
-	// 计算本次余额
-	$("#content").on("change", ".cost-input", function() {
-		var inputVal = Number($(".cost-input").val()),
-			totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
-			bcye = Number($(".yonghu-yingshoufei-bcye").text()),
-			zhye = Number($(".yonghu-info-balance").text());
-		$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje + zhye).toFixed(2))
 
-	})
 	var savedBleId = localStorage.getItem("bleId");
 	if (savedBleId) {
 		var bleObj = new ConnectPrinter(savedBleId);
 	} else {
-		plus.nativeUI.confirm("打印机未设置，是否前往设置？", function(e) {
+		mui.confirm("打印机未设置，是否前往设置？", "温馨提示", ["确定", "取消"], function(e) {
 			if (e.index === 0) {
 				mui.openWindow({
 					url: "/pages/printer.html",
 					id: "/pages/printer.html"
 
 				});
+			} else {
+				window.localStorage.removeItem("bleId");
+				$(".confirm-btn").addClass("first-btn-active")
+				mui.toast("请先连接打印机!", {
+					duration: 'short',
+					type: 'div'
+				})
 			}
-		});
+		}, "div");
 	}
-	if (window.localStorage.getItem("isConnected") == null) {
-		$("#content").on("tap", ".confirm-btn", function() {
-			number++;
-			if (number <= 1) {
-				var ickaBh = $(".yonghu-info-number").text(),
-					inputVal = Number($(".cost-input").val()),
-					totalje = $(".yonghu-yingshoufei-totalje-ys").text(),
-					bcye = Number($(".yonghu-yingshoufei-bcye").text()),
-					zhye = Number($(".yonghu-info-balance").text());
-
-				yingShouFeiId = $(".yonghu-yingshoufei-length").eq(0).attr("yingshoufei-id");
-				// 输入收费金额不能为0
-				if (inputVal <= 0 || inputVal == "") {
-					mui.alert("收费金额必须大于0", "温馨提示", "确定", function() {}, "div")
+	if (window.localStorage.getItem("isConnected") == null && savedBleId !== null) {
+		// 计算本次余额
+		$("#content").on("change", ".cost-input", function() {
+			var inputVal = Number($(".cost-input").val()),
+				totalje = Number($(".yonghu-yingshoufei-totalje-ys").text()),
+				bcye = Number($(".yonghu-yingshoufei-bcye").text()),
+				zhye = Number($(".yonghu-info-balance").text()),
+				lateFee = Number($(".yonghu-yingshoufei-lateFee").text()),
+				qfje = Number($(".yonghu-yingshoufei-totalje").text());
+			if (totalje == "0") {
+				$(".yonghu-yingshoufei-this-balance").text((zhye - (qfje + lateFee) + inputVal).toFixed(2))
+			} else {
+				if (inputVal > qfje + lateFee-bcye || inputVal == qfje + lateFee-bcye) {
+					$(".confirm-btn").removeClass("first-btn-active")
+					$(".yonghu-yingshoufei-this-balance").text((inputVal - (qfje + lateFee) + zhye).toFixed(2))
 				} else {
-					costing(costingApi, ickaBh, inputVal, yingShouFeiId, userID, zuticode, indexHtml)
-					$(".yonghu-yingshoufei-this-balance").text((inputVal - totalje + zhye).toFixed(2))
 					$(".confirm-btn").addClass("first-btn-active")
-					mui.alert("收费成功！", "温馨提示", "确定", function(e) {
-						if (e.index == 0) {
-							mui.openWindow(indexHtml)
-						}
-					}, "div")
-
+					mui.alert("收费金额必须大于欠费", "温馨提示", "确定", function() {}, "div")
+				}
+			}
+		})
+		$("#content").on("tap", ".confirm-btn", function() {
+			var inputVal = Number($(".cost-input").val()),
+				totalje = Number($(".yonghu-yingshoufei-totalje-ys").text()),
+				bcye = Number($(".yonghu-yingshoufei-bcye").text()),
+				zhye = Number($(".yonghu-info-balance").text()),
+				lateFee = Number($(".yonghu-yingshoufei-lateFee").text()),
+				qfje = Number($(".yonghu-yingshoufei-totalje").text()),
+				ickaBh = $(".yonghu-info-number").attr("icka-bh"),
+				yingShouFeiId = $(".yonghu-yingshoufei-length").eq(0).attr("yingshoufei-id");
+			// 输入收费金额不能小于欠费金额
+			if (inputVal != "0" && inputVal >= totalje&&inputVal != "") {
+				if (totalje == 0) {
+					$(".yonghu-yingshoufei-this-balance").text((zhye - (qfje + lateFee) + inputVal).toFixed(2))
+					costing(costingApi, ickaBh, inputVal, yingShouFeiId, userID, zuticode, indexHtml)
+				} else {
+					if (inputVal > qfje + lateFee-bcye || inputVal == qfje + lateFee-bcye) {
+						costing(costingApi, ickaBh, inputVal, yingShouFeiId, userID, zuticode, indexHtml)
+						$(".confirm-btn").removeClass("first-btn-active")
+						$(".yonghu-yingshoufei-this-balance").text((inputVal - (qfje + lateFee) + zhye).toFixed(2))
+					} else {
+						$(".confirm-btn").addClass("first-btn-active")
+						
+						mui.alert("收费金额必须大于欠费", "温馨提示", "确定", function() {}, "div")
+					}
 				}
 			} else {
-				mui.alert("不能重复收费", "温馨提示", "确定", function() {}, "div")
+				// $(".confirm-btn").removeClass("first-btn-active")
+				mui.alert("收费金额错误，请核对收费金额！", "温馨提示", "确定", function() {}, "div")
 
 			}
 

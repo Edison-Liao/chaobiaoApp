@@ -31,11 +31,9 @@ mui.plusReady(function() {
 					var data = JSON.parse(data.getElementsByTagName("string")[0].childNodes[0].nodeValue);
 					if (data.DataSuccess) {
 						mui.toast(data.DataMessage)
-						if (data.DataSuccess) {
-							mui.openWindow(entryDetails)
-						}
-						/* mui.openWindow(entryDetails) */
-						$(".reading-input").trigger("click").focus()
+						plus.nativeUI.closeWaiting();
+						mui.openWindow(entryDetails)
+
 					} else {
 						mui.alert(data.DataMessage, "温馨提示", "确定", function() {}, "div")
 						plus.nativeUI.closeWaiting();
@@ -43,8 +41,6 @@ mui.plusReady(function() {
 
 				},
 				error: function error(data) {
-					//200的响应也有可能被认定为error，responseText中没有Message部分
-					//mui.alert(JSON.parse(data.responseText).Message);
 					mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 					plus.nativeUI.closeWaiting();
 				},
@@ -58,7 +54,10 @@ mui.plusReady(function() {
 		var yhcode = $(".yonghu-info-code").text(),
 			zidsInput = $(".reading-input").val(),
 			xh = $(".yonghu-info-code").attr("xh");
-		reading(readingApi, yhcode, userID, zuticode, xh, zidsInput, entryDetails)
+		if (yhcode !== zidsInput) {
+			reading(readingApi, yhcode, userID, zuticode, xh, zidsInput, entryDetails)
+		}
+
 	})
 
 

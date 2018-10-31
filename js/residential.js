@@ -8,7 +8,6 @@
 			userID = window.localStorage.getItem("userID"),
 			herfIndex = window.localStorage.getItem("herfIndex"),
 			newDate = new Date(),
-			/* 	newDate.setDate(newDate.getDate() - 1), */
 			newYear = newDate.getFullYear(),
 			newMonth = newDate.getMonth() + 1 <= 9 ? "0" + (newDate.getMonth() + 1) : newDate.getMonth() + 1,
 			newDay = newDate.getDate() <= 9 ? "0" + newDate.getDate() : newDate.getDate(),
@@ -40,9 +39,6 @@
 							userPicker.setData(dataList);
 						},
 						error: function(data) {
-							//alert($.parseJSON(data.responseText).Message);
-							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
-											var result = $.parseJSON(jsonData); // 转成JSON对象*/
 							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
@@ -76,9 +72,6 @@
 							userPicker.setData(dataList);
 						},
 						error: function(data) {
-							//alert($.parseJSON(data.responseText).Message);
-							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
-											var result = $.parseJSON(jsonData); // 转成JSON对象*/
 							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
@@ -112,9 +105,6 @@
 							userPicker.setData(dataList);
 						},
 						error: function(data) {
-							//alert($.parseJSON(data.responseText).Message);
-							/*				var jsonData = JSON.stringify(data); // 转成JSON格式
-											var result = $.parseJSON(jsonData); // 转成JSON对象*/
 							mui.alert("获取数据失败，请返回上级页面", "温馨提示", "确定", function() {}, "div")
 							plus.nativeUI.closeWaiting();
 						},
@@ -160,7 +150,7 @@
 				})
 			}
 		}, false);
-		/* 调用时间方法 */
+		/* 调用开始时间方法 */
 		$("#content").on("tap", ".start-time", function(event) {
 			var startTime = document.getElementsByClassName("start-time")[0].getElementsByTagName("input")[0],
 				startPicker = new mui.DtPicker({
@@ -172,6 +162,7 @@
 			})
 
 		}, false);
+		/* 调用结束时间方法 */
 		$("#content").on("tap", ".end-time", function(event) {
 			var endTime = document.getElementsByClassName("end-time")[0].getElementsByTagName("input")[0],
 				endPicker = new mui.DtPicker({

@@ -46,9 +46,7 @@ mui.plusReady(function() {
 			 */
 			goHome: function(title, titleIf, mes, openInfo) {
 				var title = title.text();
-				if (title == titleIf) {
-					mui.alert(mes, "温馨提示", "确定", function() {}, "div")
-				} else {
+				if (title !== titleIf) {
 					mui.openWindow(openInfo)
 					window.localStorage.removeItem("herfIndex")
 				}
@@ -61,7 +59,7 @@ mui.plusReady(function() {
 
 				mui.confirm('是否退出app？', '温馨提示', mes, function(e) {
 					if (e.index == 0) {
-						window.localStorage.removeItem("userName")
+						window.localStorage.clear();
 						plus.runtime.quit();
 					}
 				}, "div");
@@ -83,18 +81,43 @@ mui.plusReady(function() {
 	swipeBack: true //启用右滑关闭功能【一旦取值为false，左右触控滑动将会失效！】
 	var slider = mui("#slider");
 	slider.slider({
-		interval: 3000
+		interval: 5000
+	});
+	/* 点击顶部返回顶部 */
+	mui("body").on("tap", "header", function() {
+		$('body,html').animate({
+			scrollTop: 0
+		}, 650);
 	});
 	/* 调用是否登陆功能 */
 	reading_method.judge(userName, adminName, loginHtml)
+	if (title = $(".header-title>h1").text() == "首页") {
+		//首页返回键处理
+		var first = null;
+		//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+		mui.back = function() {
+			if (!first) {
+				first = new Date().getTime();
+				mui.toast('再按一次退出应用');
+				setTimeout(function() {
+					first = null;
+				}, 1000);
+			} else {
+				if (new Date().getTime() - first < 1000) {
+					window.localStorage.clear();
+					plus.runtime.quit();
+				}
+			}
+		};
+	}
 	/*调用返回首页功能*/
-	mui(".footer-nav").on("click", "#go-home", function() {
+	mui(".footer-nav").on("tap", "#go-home", function() {
 		mui.init();
 		var title = $(".header-title>h1");
 		reading_method.goHome(title, titleNode, homeMes, indexHtml)
 	})
 	/*调用退出功能*/
-	mui(".footer-nav").on("click", "#go-out", function() {
+	mui(".footer-nav").on("tap", "#go-out", function() {
 		mui.init();
 		reading_method.goOut(ouTmes)
 	})
@@ -103,23 +126,4 @@ mui.plusReady(function() {
 		var $this = $(this);
 		reading_method.goPages($this, searchHtml, herfIndex)
 	})
-	/*   点击扫一扫跳转页面 */
-	mui("#popover").on("tap", ".scanning", function() {
-		mui.openWindow({
-			url: "/pages/scanning.html",
-			id: "scanning.html"
-		})
-		mui('#popover').popover('toggle');
-	})
-	var title = $(".header-title>h1");
-	if (title == titleNode) {
-		mui.back = function() {
-			plus.runtime.quit();
-			// 			mui.confirm('是否退出app？', '温馨提示', mes, function(e) {
-			// 				if (e.index == 0) {
-			// 					plus.runtime.quit();
-			// 				}
-			// 			}, "div")
-		}
-	}
 })
