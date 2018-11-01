@@ -10,7 +10,15 @@ mui.plusReady(function() {
 		zuticode = window.localStorage.getItem("zuticode"),
 
 		number = 0,
-		/* 收费列表 */
+		/* 收费列表 
+		*api:(url)调用接口地址
+		*ickaBh:(string)每一个user唯一的标识
+		*inputVal:(string)输入收费的金额 
+		*yingShouFeiId:(string)用户应收费ID
+		*userID:(string)登录的管理员ID
+		*zuticode(string)登录管理员的code
+		*indexHtml(object)跳转的页面 
+		*/
 		costing = function(api, ickaBh, inputVal, yingShouFeiId, userID, zuticode, indexHtml) {
 			$.ajax({
 				url: api,

@@ -49,13 +49,17 @@ mui.plusReady(function() {
 				}
 			});
 		};
-
+		mui.alert("重新输入金额必须大于本次读数默认值！", "温馨提示", "确定", function() {}, "div")
 	$("#content").on("tap", ".save-btn", function() {
-		var yhcode = $(".yonghu-info-code").text(),
+		var qids = $(".yonghu-chaobiao-Qids").text(),
 			zidsInput = $(".reading-input").val(),
-			xh = $(".yonghu-info-code").attr("xh");
-		if (yhcode !== zidsInput) {
+			yhcode = $(".yonghu-info-code").text()
+		xh = $(".yonghu-info-code").attr("xh");
+		console.log(zidsInput)
+		if (qids !== zidsInput && qids < zidsInput) {
 			reading(readingApi, yhcode, userID, zuticode, xh, zidsInput, entryDetails)
+		} else {
+			mui.alert("请正确输入止读数！", "温馨提示", "确定", function() {}, "div")
 		}
 
 	})

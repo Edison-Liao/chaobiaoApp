@@ -5,7 +5,7 @@
 
 .header-title {
 	background-color: #007BE6;
-	
+
 }
 
 .header-title>h1 {
@@ -76,9 +76,9 @@
 
 /*轮播图*/
 
-.slider {
+/* .slider {
 	height: 230px;
-}
+} */
 
 
 /*九宫格导航*/
@@ -190,8 +190,12 @@
 	width: 25%;
 }
 
-.login-form>.mui-input-row>label>i {
+.login-form>.mui-input-row>label>.fa-user-o {
 	margin-right: 5px;
+}
+
+.login-form>.mui-input-row>label>.fa-lock {
+	margin-right: 8px;
 }
 
 .login-form>.mui-input-row>input {
@@ -321,12 +325,13 @@
 	white-space: nowrap;
 }
 
-.users-number{
+.users-number {
 	max-width: 90px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
 .mui-table-view-cell>.money-table-number {
 	font-size: 14px;
 	color: #000000;
