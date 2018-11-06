@@ -63,7 +63,6 @@ var SearchBluetooth = function() {
 								});
 								self.SetButtonStatus("配对成功正在尝试连接打印机...", true);
 								localStorage.setItem("bleId", id);
-
 								var bleObj = new ConnectPrinter(id);
 								bleObj = null;
 								window.clearInterval(testBondState);

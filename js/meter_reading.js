@@ -49,20 +49,26 @@ mui.plusReady(function() {
 				}
 			});
 		};
-		mui.alert("重新输入金额必须大于本次读数默认值！", "温馨提示", "确定", function() {}, "div")
 	$("#content").on("tap", ".save-btn", function() {
 		var qids = $(".yonghu-chaobiao-Qids").text(),
 			zidsInput = $(".reading-input").val(),
-			yhcode = $(".yonghu-info-code").text()
-		xh = $(".yonghu-info-code").attr("xh");
-		console.log(zidsInput)
-		if (qids !== zidsInput && qids < zidsInput) {
+			yhcode = $(".yonghu-info-code").text(),
+			xh = $(".yonghu-info-code").attr("xh");
+		if (zidsInput > qids) {
 			reading(readingApi, yhcode, userID, zuticode, xh, zidsInput, entryDetails)
 		} else {
-			mui.alert("请正确输入止读数！", "温馨提示", "确定", function() {}, "div")
+			mui.alert("请正确输入止数！", "温馨提示", "确定", function() {}, "div")
 		}
 
 	})
+	var users_list = plus.webview.getWebviewById("users_list");
+	var old_back = mui.back;
+	mui.back = function() {
+		if (users_list != null && users_list.id == "users_list") {
+			users_list.reload(true);
+		}
+		old_back()
+	}
 
 
 })
