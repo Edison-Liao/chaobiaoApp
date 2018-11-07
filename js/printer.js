@@ -100,9 +100,9 @@ var SearchBluetooth = function() {
 					bleObj = null;
 					var fee_charge = plus.webview.getWebviewById("fee_charge.html"),
 						charge_results = plus.webview.getWebviewById("charge_results");
-					if (fee_charge != null&&fee_charge.id=="fee_charge.html") {
+					if (fee_charge != null && fee_charge.id == "fee_charge.html") {
 						fee_charge.reload(true);
-					}else if(charge_results!= null&&charge_results.id=="charge_results"){
+					} else if (charge_results != null && charge_results.id == "charge_results") {
 						charge_results.reload(true);
 					}
 					mui.back();
@@ -250,6 +250,7 @@ var SearchBluetooth = function() {
 					device = null;
 					bluetoothSocket.close();
 				};
+
 			} else {
 				mui.toast("连接异常，请先正确连接打印机！", {
 					duration: 'short',
@@ -257,6 +258,14 @@ var SearchBluetooth = function() {
 				})
 				$(".confirm-btn,.re-charge-btn").addClass("first-btn-active")
 				window.localStorage.setItem("isConnected", "true")
+			}
+			var muiBack = mui.back;
+			mui.back = function() {
+				if (bluetoothSocket.isConnected()) {
+					bluetoothSocket.close();
+
+				}
+				muiBack();
 			}
 
 		} catch (e) {
