@@ -101,6 +101,7 @@ var SearchBluetooth = function() {
 					var fee_charge = plus.webview.getWebviewById("fee_charge.html"),
 						charge_results = plus.webview.getWebviewById("charge_results");
 					if (fee_charge != null && fee_charge.id == "fee_charge.html") {
+
 						fee_charge.reload(true);
 					} else if (charge_results != null && charge_results.id == "charge_results") {
 						charge_results.reload(true);
@@ -267,6 +268,9 @@ var SearchBluetooth = function() {
 				}
 				muiBack();
 			}
+			$(".costing-list").on("tap", ".cost-record-list,.pre-charge-btn,", function() {
+				bluetoothSocket.close();
+			})
 
 		} catch (e) {
 			mui.toast("连接异常，请先正确连接打印机！", {

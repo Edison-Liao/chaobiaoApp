@@ -133,14 +133,12 @@ mui.plusReady(function() {
 						$(".yonghu-yingshoufei-this-balance").text((inputVal - (qfje + lateFee) + zhye).toFixed(2))
 					} else {
 						$(".confirm-btn").addClass("first-btn-active")
-						
 						mui.alert("收费金额必须大于欠费", "温馨提示", "确定", function() {}, "div")
 					}
 				}
 			} else {
 				// $(".confirm-btn").removeClass("first-btn-active")
 				mui.alert("收费金额错误，请核对收费金额！", "温馨提示", "确定", function() {}, "div")
-
 			}
 
 		})

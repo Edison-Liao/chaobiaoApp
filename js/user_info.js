@@ -140,7 +140,7 @@ mui.plusReady(function() {
 	$("#content").on("tap", ".costing-btn", function() {
 		mui.openWindow({
 			url: "/pages/fee_charge/fee_charge.html",
-			id: "fee_charge",
+			id: "fee_charge.html",
 			createNew: true
 		})
 	})
@@ -158,7 +158,7 @@ mui.plusReady(function() {
 		if ($(".user-info-list").attr("arrears") == "false") {
 			mui.openWindow({
 				url: "/pages/fee_charge/fee_charge.html",
-				id: "fee_charge",
+				id: "fee_charge.html",
 				createNew: true
 			})
 		}
