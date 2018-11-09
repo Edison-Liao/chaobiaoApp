@@ -268,7 +268,7 @@ var SearchBluetooth = function() {
 				}
 				muiBack();
 			}
-			$(".costing-list").on("tap", ".cost-record-list,.pre-charge-btn,", function() {
+			$(".costing-list").on("tap", ".cost-record-list,.pre-charge-btn,.cost-record-btn,.file-details-btn,.return-search-btn,.costing-btn", function() {
 				bluetoothSocket.close();
 			})
 

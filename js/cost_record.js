@@ -4,12 +4,12 @@ var costApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYongh
 	userInfoApi = "http://223.85.248.171:8012/ashx/WebYonghuManagement.asmx/GetYonghuInfo",
 	chargeResults = {
 		url: "/pages/fee_charge/charge_results.html",
-		id: "charge_results.html",
+		id: "charge_results",
 		createNew: true
 	},
 	feeCharge = {
 		url: "/pages/fee_charge/fee_charge.html",
-		id: "fee_charge",
+		id: "fee_charge.html",
 		createNew: true
 	},
 	costJson = {
